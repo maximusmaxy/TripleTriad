@@ -6,6 +6,7 @@
 package classes;
 
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,62 +20,106 @@ import java.util.List;
  * @author Max
  */
 public class Game {
-    
+
     private Input input;
     private List<Card> cards;
-    
-    //test stuff
-    private SpriteCard test;
-    private boolean held;
+    private SpriteSet spriteSet;
+
+    private SpriteCard[] leftCards;
+    private SpriteCard[] rightCards;
+    private SpriteCard held;
+    private SpriteCard hovered;
     private int offsetX;
     private int offsetY;
-    
+    private Rectangle[][] boardRects;
+
+    //test stuff
+    private SpriteDebug debug;
+
     public Game(Input input) {
         this.input = input;
         cards = loadCards();
-        test = new SpriteCard(cards.get(0));
-    }
-    
-    public void update() {
-        if (input.isClicked()) {
-            if (test.getRect().contains(input.getPosition())) {
-                held = true;
-                offsetX = test.getX() - input.getPosition().x;
-                offsetY = test.getY() - input.getPosition().y;
+        debug = new SpriteDebug(input);
+        spriteSet = new SpriteSet();
+        leftCards = new SpriteCard[5];
+        rightCards = new SpriteCard[5];
+        for (int i = 0; i < leftCards.length; i++) {
+            leftCards[i] = new SpriteCard(spriteSet, new GameCard(cards.get(0), true));
+            leftCards[i].setDefaultLocation(50, 50 + 100 * i, i);     
+            rightCards[i] = new SpriteCard(spriteSet, new GameCard(cards.get(0), false));
+            rightCards[i].setDefaultLocation(1000, 50 + 100 * i, i);
+        }
+        boardRects = new Rectangle[3][3];
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                boardRects[i][j] = new Rectangle(375 + 150 * i, 112 + 150 * j, 150, 150);
             }
         }
-        if (input.isReleased())
-            held = false;
-        if (held) {
-            test.setX(input.getPosition().x + offsetX);
-            test.setY(input.getPosition().y + offsetY);
-        }
     }
-    
-    public void draw(Graphics2D g) {
-        test.draw(g);
-        if (input.isDown()) {
-            g.drawString("Down", 200, 150);
-        }
-        else {
-            g.drawString("Up", 200, 150);
-        }
+
+    public void update() {
         if (input.isClicked()) {
-            g.drawString("Clicked", 200, 200);
+            held = getMouseCard();
+            if (held != null) {
+                offsetX = held.getX() - input.getPosition().x;
+                offsetY = held.getY() - input.getPosition().y;
+            }
+        } else if (input.isReleased()) {
+            if (held != null) {
+                Rectangle rect = getBoardRect();
+                if (rect != null) {
+                    held.setDefaultLocation(rect.x, rect.y, 0);
+                } else {
+                    held.reset();
+                }
+                held = null;
+            }
         }
-        else {
-            g.drawString("NotClicked", 200, 200);
+        if (held != null) {
+            held.setX(input.getPosition().x + offsetX);
+            held.setY(input.getPosition().y + offsetY);
+        } else {
+            SpriteCard hover = getMouseCard();
+            if (hovered != null && hovered != hover) {
+                hovered.reset();
+            }
+            if (hover != null) {
+                hover.setZ(6);
+                hovered = hover;
+            }
         }
-        if (input.isReleased()) {
-            g.drawString("Released", 200, 250);
-        }
-        else {
-            g.drawString("NotReleased", 200, 250);
-        }
-        g.drawString("X: " + input.getPosition().x, 200, 300);
-        g.drawString("Y: " + input.getPosition().y, 200, 350);
+        spriteSet.update();
     }
-    
+
+    public SpriteCard getMouseCard() {
+        for (int i = 4; i >= 0; i--) {
+            if (leftCards[i].getRect().contains(input.getPosition())) {
+                return leftCards[i];
+            }
+            if (rightCards[i].getRect().contains(input.getPosition())) {
+                return rightCards[i];
+            }
+        }
+        return null;
+    }
+
+    public Rectangle getBoardRect() {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (boardRects[i][j].contains(
+                        held.getRect().getCenterX(), held.getRect().getCenterY())) {
+                    return boardRects[i][j];
+                }
+            }
+        }
+        return null;
+    }
+
+    public void draw(Graphics2D g) {
+        spriteSet.draw(g);
+        debug.draw(g);
+    }
+
     public List<Card> loadCards() {
         List<Card> cards = new ArrayList();
         InputStream is = getClass().getResourceAsStream("/data/cards.txt");
