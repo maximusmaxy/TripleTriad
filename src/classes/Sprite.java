@@ -17,18 +17,24 @@ import javax.swing.ImageIcon;
  *
  * @author Max
  */
-public class Sprite {
+public class Sprite implements Comparable<Sprite> {
     
+    protected SpriteSet spriteSet;
     protected Rectangle rect;
     protected Image image;
+    protected int z;
     
-    public Sprite() {
+    public Sprite(SpriteSet spriteSet) {
+        this.spriteSet = spriteSet;
+        spriteSet.add(this);
         rect = new Rectangle();
     }
     
-    public Sprite(String imageName) {
-        this();
-        setImage(imageName);
+    public Sprite(SpriteSet spriteSet, String imageName) {
+        this(spriteSet);
+        image = loadImage(imageName);
+        rect.width = image.getWidth(null);
+        rect.height = image.getHeight(null);
     }
     
     public Rectangle getRect() {
@@ -43,12 +49,21 @@ public class Sprite {
         return rect.y;
     }
     
+    public int getZ() {
+        return z;
+    }
+    
     public void setX(int x) {
         rect.x = x;
     }
     
     public void setY(int y) {
         rect.y = y;
+    }
+    
+    public void setZ(int z) {
+        this.z = z;
+        spriteSet.requestUpdate();
     }
     
     public void setLocation(Point p) {
@@ -59,15 +74,21 @@ public class Sprite {
         rect.setLocation(x, y);
     }
     
-    public void setImage(String name) {
+    public void setLocation(int x, int y, int z) {
+        rect.setLocation(x, y);
+        this.z = z;
+        spriteSet.requestUpdate();
+    }
+    
+    public Image loadImage(String name) {
         try {
             ImageIcon icon = new ImageIcon(this.getClass().getResource("/images/" + name + ".png"));
-            image = icon.getImage();
-            rect.width = image.getWidth(null);
-            rect.height = image.getHeight(null);
+            Image image = icon.getImage();
+            return image;
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
+        return null;
     }
     
     public void draw(Graphics2D g) {
@@ -80,5 +101,10 @@ public class Sprite {
         g.drawString(s, x + 2, y + 2);
         g.setColor(oldColor);
         g.drawString(s, x, y);
+    }
+
+    @Override
+    public int compareTo(Sprite other) {
+        return z - other.getZ();
     }
 }

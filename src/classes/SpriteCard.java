@@ -8,31 +8,58 @@ package classes;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 
 /**
  *
  * @author Max
  */
 public class SpriteCard extends Sprite{
-    private Card card;
+    private GameCard card;
     private Font font;
+    private BufferedImage bufferedImage;
+    private int defaultX;
+    private int defaultY;
+    private int defaultZ;
     
-    public SpriteCard(Card card) {
-        super(card.getName());
+    public SpriteCard(SpriteSet spriteSet, GameCard card) {
+        super(spriteSet, card.getName());
+        this.bufferedImage = new BufferedImage(150, 150, BufferedImage.TYPE_INT_ARGB);
         this.card = card;
         this.font = new Font("Helvetica", Font.BOLD, 32);
+        refresh();
+    }
+    
+    public void setDefaultLocation(int x, int y, int z) {
+        defaultX = x;
+        defaultY = y;
+        defaultZ = z;
+        setLocation(x, y, z);
+    }
+    
+    public void reset() {
+        setLocation(defaultX, defaultY, defaultZ);
+    }
+    
+    public void refresh() {
+        Graphics2D g = (Graphics2D) bufferedImage.getGraphics();
+        if (card.isLeft())
+            g.setColor(Color.BLUE);
+        else
+            g.setColor(Color.RED);
+        g.fillRect(0, 0, rect.width, rect.height);
+        g.drawImage(image, 0, 0, 150, 150, null);
+        g.setColor(Color.WHITE);
+        g.setFont(font);
+        drawShadowedString(g, String.valueOf(card.getUp()), 66, 28);
+        drawShadowedString(g, String.valueOf(card.getRight()), 122, 86);
+        drawShadowedString(g, String.valueOf(card.getDown()), 66, 142);
+        drawShadowedString(g, String.valueOf(card.getLeft()), 6, 86);
     }
     
     @Override
     public void draw(Graphics2D g) {
-        g.setColor(Color.BLUE);
-        g.fillRect(rect.x, rect.y, rect.width, rect.height);
-        super.draw(g);
-        g.setColor(Color.WHITE);
-        g.setFont(font);
-        drawShadowedString(g, String.valueOf(card.getUp()), rect.x + 66, rect.y + 28);
-        drawShadowedString(g, String.valueOf(card.getRight()), rect.x + 122, rect.y + 86);
-        drawShadowedString(g, String.valueOf(card.getDown()), rect.x + 66, rect.y + 142);
-        drawShadowedString(g, String.valueOf(card.getLeft()), rect.x + 6, rect.y + 86);
+        g.drawImage(bufferedImage, null, rect.x, rect.y);
     }
 }
