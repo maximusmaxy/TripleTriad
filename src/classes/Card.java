@@ -16,13 +16,15 @@ public class Card {
     private int right;
     private int down;
     private int left;
+    private int rank;
     
-    public Card(String name, int up, int right, int down, int left) {
+    public Card(String name, int up, int right, int down, int left, int rank) {
         this.name = name;
         this.up = up;
         this.right = right;
         this.down = down;
         this.left = left;
+        this.rank = rank;
     }
 
     public String getName() {
@@ -37,31 +39,21 @@ public class Card {
         return up;
     }
 
-    public void setUp(int up) {
-        this.up = up;
-    }
-
     public int getRight() {
         return right;
     }
 
-    public void setRight(int right) {
-        this.right = right;
-    }
 
     public int getDown() {
         return down;
     }
 
-    public void setDown(int down) {
-        this.down = down;
-    }
 
     public int getLeft() {
         return left;
     }
 
-    public void setLeft(int left) {
-        this.left = left;
+    public int getRank() {
+        return rank;
     }
 }

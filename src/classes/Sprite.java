@@ -37,7 +37,7 @@ public class Sprite implements Comparable<Sprite> {
     
     public Sprite(SpriteSet spriteSet, String imageName) {
         this(spriteSet);
-        setImage(loadImage(imageName));
+        setImage(Loader.loadImage(imageName));
     }
     
     public Sprite(SpriteSet spriteSet, int width, int height) {
@@ -92,17 +92,6 @@ public class Sprite implements Comparable<Sprite> {
     
     public BufferedImage getImage() {
         return image;
-    }
-    
-    public Image loadImage(String name) {
-        try {
-            ImageIcon icon = new ImageIcon(this.getClass().getResource("/images/" + name + ".png"));
-            Image image = icon.getImage();
-            return image;
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        }
-        return null;
     }
     
     public void setImage(Image image) {

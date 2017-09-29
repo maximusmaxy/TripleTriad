@@ -18,7 +18,7 @@ public class SpriteConnection extends Sprite {
     public SpriteConnection(SpriteSet spriteSet, Connection connection) {
         super(spriteSet, 600, 50);
         this.connection = connection;
-        setLocation(600, 0, 10);
+        setLocation(400, 0, 10);
         refresh("Waiting for connection");
     }
     

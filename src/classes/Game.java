@@ -56,7 +56,7 @@ public class Game {
     public Game(Input input, Connection connection) {
         this.input = input;
         this.connection = connection;
-        cards = loadCards();
+        cards = Loader.loadCards();
         spriteSet = new SpriteSet();
         spriteConnection = new SpriteConnection(spriteSet, connection);
         leftPlayer = new Player();
@@ -67,7 +67,7 @@ public class Game {
         for (int i = 0; i < 5; i++) {
             leftPlayer.getCards()[i] = new SpriteCard(spriteSet, cards.get(0), false);
             leftPlayer.getCards()[i].setDefaultLocation(50, 50 + 100 * i, i);
-            rightPlayer.getCards()[i] = new SpriteCard(spriteSet, cards.get(0), true);
+            rightPlayer.getCards()[i] = new SpriteCard(spriteSet, cards.get(1), true);
             rightPlayer.getCards()[i].setDefaultLocation(1000, 50 + 100 * i, i);
         }
         connect();
@@ -218,31 +218,6 @@ public class Game {
 
     public void draw(Graphics2D g) {
         spriteSet.draw(g);
-    }
-
-    public List<Card> loadCards() {
-        List<Card> cards = new ArrayList();
-        InputStream is = getClass().getResourceAsStream("/data/cards.txt");
-        InputStreamReader isr = new InputStreamReader(is);
-        BufferedReader br = new BufferedReader(isr);
-        String[] split;
-        String line;
-        try {
-            br.readLine();
-            while ((line = br.readLine()) != null) {
-                split = line.split("\\|");
-                cards.add(new Card(
-                        split[0],
-                        Integer.parseInt(split[1]),
-                        Integer.parseInt(split[2]),
-                        Integer.parseInt(split[3]),
-                        Integer.parseInt(split[4])));
-            }
-            is.close();
-        } catch (IOException ex) {
-            System.out.println(ex.getMessage());
-        }
-        return cards;
     }
 
     public void connect() {
