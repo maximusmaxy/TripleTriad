@@ -17,16 +17,26 @@ import java.awt.image.BufferedImage;
 public class SpriteCard extends Sprite{
     private Card card;
     private Image character;
-    private boolean right;
+    private boolean blue;
     private int defaultX;
     private int defaultY;
     private int defaultZ;
     
+    //static images
+    public static final Image[] BORDERS = new Image[] {
+        Loader.loadImage("Border1"),
+        Loader.loadImage("Border2"),
+        Loader.loadImage("Border3")
+    };
+    public static final Image BLUE = Loader.loadImage("Blue");
+    public static final Image RED = Loader.loadImage("Red");
+    
+    
     public SpriteCard(SpriteSet spriteSet, Card card, boolean right) {
         super(spriteSet);
         this.card = card;
-        this.right = right;
-        character = loadImage(card.getName());
+        this.blue = right;
+        character = Loader.loadImage(card.getName());
         rect.width = character.getWidth(null);
         rect.height = character.getHeight(null);
         image = new BufferedImage(rect.width, rect.height, BufferedImage.TYPE_INT_ARGB);
@@ -37,8 +47,8 @@ public class SpriteCard extends Sprite{
         return card;
     }
     
-    public boolean isRight() {
-        return right;
+    public boolean isBlue() {
+        return blue;
     }
     
     public void setDefaultLocation(int x, int y, int z) {
@@ -54,9 +64,16 @@ public class SpriteCard extends Sprite{
     
     public void refresh() {
         Graphics2D g = (Graphics2D) image.getGraphics();
-        g.setColor(right ? Color.BLUE : Color.RED);
-        g.fillRect(0, 0, rect.width, rect.height);
+        //draw background
+        if (blue)
+            g.drawImage(BLUE, 0, 0, 150, 150, null);
+        else
+            g.drawImage(RED, 0, 0, 150, 150, null);
+        //draw character
         g.drawImage(character, 0, 0, 150, 150, null);
+        //draw border
+        g.drawImage(BORDERS[card.getRank() - 1], 0, 0, 150, 150, null);
+        //draw text
         g.setColor(Color.WHITE);
         g.setFont(font);
         drawShadowedString(g, String.valueOf(card.getUp()), 66, 28);
