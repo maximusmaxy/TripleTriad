@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * Handles sprite sorting for virtual Z values.
  * @author Max
  */
 public class SpriteSet {

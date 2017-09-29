@@ -10,5 +10,23 @@ package classes;
  * @author Max
  */
 public class Player {
-    private Card[] cards;
+    private SpriteCard[] cards;
+    private int score;
+    
+    public Player() {
+        cards = new SpriteCard[5];
+        score = 5;
+    }
+
+    public SpriteCard[] getCards() {
+        return cards;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
 }

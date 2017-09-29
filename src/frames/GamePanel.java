@@ -21,16 +21,18 @@ public class GamePanel extends javax.swing.JPanel implements ActionListener {
     private Timer timer;
     private Game game;
     private Input input;
+    private Connection connection;
     /**
      * Creates new form GamePanel
      */
     public GamePanel() {
         initComponents();
-        timer = new Timer(16, this);
-        timer.start();
         input = new Input(this);
         addMouseListener(input);
-        game = new Game(input);
+        connection = new Connection();
+        game = new Game(input, connection);
+        timer = new Timer(16, this);
+        timer.start();
     }
 
     @Override
@@ -48,7 +50,7 @@ public class GamePanel extends javax.swing.JPanel implements ActionListener {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setPreferredSize(new java.awt.Dimension(1200, 690));
+        setPreferredSize(new java.awt.Dimension(1200, 675));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -67,6 +69,10 @@ public class GamePanel extends javax.swing.JPanel implements ActionListener {
         input.update();
         game.update();
         repaint();
+    }
+    
+    public void sendExit() {
+        connection.sendExit();
     }
 
 

@@ -6,11 +6,12 @@
 package classes;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.Paint;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 
 /**
@@ -21,20 +22,29 @@ public class Sprite implements Comparable<Sprite> {
     
     protected SpriteSet spriteSet;
     protected Rectangle rect;
-    protected Image image;
+    protected BufferedImage image;
     protected int z;
+    protected Font font;
+    
+    public static final Color TRANSPARENT = new Color(0, 0, 0, 0);
     
     public Sprite(SpriteSet spriteSet) {
         this.spriteSet = spriteSet;
         spriteSet.add(this);
         rect = new Rectangle();
+        font = new Font("Helvetica", Font.BOLD, 32);
     }
     
     public Sprite(SpriteSet spriteSet, String imageName) {
         this(spriteSet);
-        image = loadImage(imageName);
-        rect.width = image.getWidth(null);
-        rect.height = image.getHeight(null);
+        setImage(loadImage(imageName));
+    }
+    
+    public Sprite(SpriteSet spriteSet, int width, int height) {
+        this(spriteSet);
+        rect.width = width;
+        rect.height = height;
+        image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
     }
     
     public Rectangle getRect() {
@@ -62,8 +72,9 @@ public class Sprite implements Comparable<Sprite> {
     }
     
     public void setZ(int z) {
+        if (this.z != z)
+            spriteSet.requestUpdate();
         this.z = z;
-        spriteSet.requestUpdate();
     }
     
     public void setLocation(Point p) {
@@ -76,8 +87,11 @@ public class Sprite implements Comparable<Sprite> {
     
     public void setLocation(int x, int y, int z) {
         rect.setLocation(x, y);
-        this.z = z;
-        spriteSet.requestUpdate();
+        setZ(z);
+    }
+    
+    public BufferedImage getImage() {
+        return image;
     }
     
     public Image loadImage(String name) {
@@ -91,18 +105,31 @@ public class Sprite implements Comparable<Sprite> {
         return null;
     }
     
-    public void draw(Graphics2D g) {
+    public void setImage(Image image) {
+        rect.width = image.getWidth(null);
+        rect.height = image.getHeight(null);
+        this.image = new BufferedImage(rect.width, rect.height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = (Graphics2D) this.image.getGraphics();
         g.drawImage(image, rect.x, rect.y, rect.width, rect.height, null);
+    }
+        
+    protected void clearImage(Graphics2D g) {
+        g.setBackground(TRANSPARENT);
+        g.clearRect(0, 0, image.getWidth(), image.getHeight());
     }
     
     protected void drawShadowedString(Graphics2D g, String s, int x, int y) {
         Color oldColor = g.getColor();
         g.setColor(Color.BLACK);
-        g.drawString(s, x + 2, y + 2);
+        g.drawString(s, x + 3, y + 3);
         g.setColor(oldColor);
         g.drawString(s, x, y);
     }
 
+    public void draw(Graphics2D g) {
+        g.drawImage(image, rect.x, rect.y, rect.width, rect.height, null);
+    }
+    
     @Override
     public int compareTo(Sprite other) {
         return z - other.getZ();
