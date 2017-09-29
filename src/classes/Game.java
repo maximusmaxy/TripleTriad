@@ -17,7 +17,7 @@ import protocol.Message;
 
 /**
  *
- * @author Max
+ * @author Maxie
  */
 public class Game {
 
