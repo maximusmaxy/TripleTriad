@@ -1,4 +1,5 @@
 name|up|right|down|left|rank
 Mummy Poro|1|2|3|4|1
 Scarecrow|5|6|7|8|2
-Ainsley|4|5|2|9
+Ainsleys|2|3|4|2|3
+mimic|4|5|9|2|1
