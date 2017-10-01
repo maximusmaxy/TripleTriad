@@ -10,6 +10,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JOptionPane;
 import javax.swing.Timer;
 
 /**
@@ -22,17 +23,31 @@ public class GamePanel extends javax.swing.JPanel implements ActionListener {
     private Game game;
     private Input input;
     private Connection connection;
+    
     /**
      * Creates new form GamePanel
      */
     public GamePanel() {
         initComponents();
+        
+        //panels
+        pnlRules.setVisible(false);
+        
+        //game objects
         input = new Input(this);
         addMouseListener(input);
         connection = new Connection();
-        game = new Game(input, connection);
+        game = new Game(this, input, connection);
         timer = new Timer(16, this);
         timer.start();
+    }
+    
+    public LoginPanel getLogin() {
+        return pnlLogin;
+    }
+    
+    public RulesPanel getRules() {
+        return pnlRules;
     }
 
     @Override
@@ -50,18 +65,15 @@ public class GamePanel extends javax.swing.JPanel implements ActionListener {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setPreferredSize(new java.awt.Dimension(1200, 675));
+        pnlLogin = new frames.LoginPanel();
+        pnlRules = new frames.RulesPanel();
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
+        setPreferredSize(new java.awt.Dimension(1200, 675));
+        setLayout(null);
+        add(pnlLogin);
+        pnlLogin.setBounds(440, 220, 376, 242);
+        add(pnlRules);
+        pnlRules.setBounds(360, 160, 527, 329);
     }// </editor-fold>//GEN-END:initComponents
 
     @Override
@@ -74,8 +86,32 @@ public class GamePanel extends javax.swing.JPanel implements ActionListener {
     public void sendExit() {
         connection.sendExit();
     }
-
+    
+    public void connect(String server, int port, String user, String pass) {
+        boolean[] collection = Loader.loadCollection(user, pass);
+        if (collection == null) {
+            JOptionPane.showMessageDialog(this,
+                    "Failed to connect to DB.\nEither the DB is down or the username/password is incorrect.");
+            return;
+        }
+        else {
+            game.setCollection(collection);
+        }
+        if (connection.connect(server, port))
+            pnlLogin.setVisible(false);
+        else
+            JOptionPane.showMessageDialog(this, "Failed to connect to server");
+    }
+    
+    public void setRules(boolean open, boolean random, boolean same, boolean plus, boolean combo) {
+        game.setRules(open, random, same, plus, combo);
+        game.start();
+        connection.sendRules(open, random, same, plus, combo);
+        pnlRules.setVisible(false);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private frames.LoginPanel pnlLogin;
+    private frames.RulesPanel pnlRules;
     // End of variables declaration//GEN-END:variables
 }

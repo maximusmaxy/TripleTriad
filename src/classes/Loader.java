@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.swing.ImageIcon;
 
@@ -19,7 +20,7 @@ public class Loader {
 
     private static final Loader loader = new Loader();
     
-    public static List<Card> loadCards() {
+    public static Card[] loadCards() {
         return loader.cards();
     }
     
@@ -27,7 +28,16 @@ public class Loader {
         return loader.image(name);
     }
     
-    public List<Card> cards() {
+    //this class in the future will use a webservice to get the collection.
+    //it will return null if it fails.
+    //right now it just returns a full collection.
+    public static boolean[] loadCollection(String username, String password) {
+        boolean[] collection = new boolean[loadCards().length];
+        Arrays.fill(collection, true);
+        return collection;
+    }
+    
+    public Card[] cards() {
         List<Card> cards = new ArrayList();
         InputStream is = getClass().getResourceAsStream("/data/cards.txt");
         InputStreamReader isr = new InputStreamReader(is);
@@ -50,7 +60,7 @@ public class Loader {
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
-        return cards;
+        return cards.toArray(new Card[cards.size()]);
     }
     
     public Image image(String name) {

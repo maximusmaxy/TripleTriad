@@ -5,26 +5,24 @@
  */
 package classes;
 
+import frames.GamePanel;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
 import protocol.Message;
 
 /**
  *
- * @author Max
+ * @author Maxie
  */
 public class Game {
 
     //system
+    private GamePanel panel;
     private Input input;
     private Connection connection;
-    private List<Card> cards;
+    private Card[] cards;
+    private boolean[] collection;
 
     //mouse stuff
     private int offsetX;
@@ -47,13 +45,14 @@ public class Game {
     private int phase;
 
     //states
-    private final int TURN = 1;
-    private final int MAIN = 2;
-    private final int BOARD = 3;
-    private final int OPPONENT = 4;
-    private final int FINISH = 5;
+    public final int START = 1;
+    public final int MAIN = 2;
+    public final int BOARD = 3;
+    public final int OPPONENT = 4;
+    public final int FINISH = 5;
 
-    public Game(Input input, Connection connection) {
+    public Game(GamePanel panel, Input input, Connection connection) {
+        this.panel = panel;
         this.input = input;
         this.connection = connection;
         cards = Loader.loadCards();
@@ -63,22 +62,44 @@ public class Game {
         rightPlayer = new Player();
         board = new Board();
         rules = new Rules();
-        phase = TURN;
+        phase = START;
         for (int i = 0; i < 5; i++) {
-            leftPlayer.getCards()[i] = new SpriteCard(spriteSet, cards.get(0), false);
+            leftPlayer.getCards()[i] = new SpriteCard(spriteSet, cards[0], false);
             leftPlayer.getCards()[i].setDefaultLocation(50, 50 + 100 * i, i);
-            rightPlayer.getCards()[i] = new SpriteCard(spriteSet, cards.get(1), true);
+            rightPlayer.getCards()[i] = new SpriteCard(spriteSet, cards[1], true);
             rightPlayer.getCards()[i].setDefaultLocation(1000, 50 + 100 * i, i);
         }
-        connect();
+    }
+
+    public void setRules(boolean open, boolean random, boolean same, boolean plus, boolean combo) {
+        rules.setOpen(open);
+        rules.setRandom(random);
+        rules.setSame(same);
+        rules.setPlus(plus);
+        rules.setCombo(combo);
+    }
+    
+    public void setCollection(boolean[] collection) {
+        this.collection = collection;
+    }
+    
+    public void start() {
+        if (player1) {
+            phase = MAIN;
+            spriteConnection.refresh("Your turn.");
+        }
+        else {
+            phase = OPPONENT;
+            spriteConnection.refresh("Opponents turn.");
+        }
     }
 
     public void update() {
         updateMessage();
         updateHover();
         switch (phase) {
-            case TURN:
-                updateTurn();
+            case START:
+                updateStart();
                 break;
             case MAIN:
                 updateMain();
@@ -92,10 +113,10 @@ public class Game {
         }
         spriteSet.update();
     }
-    
+
     private void updateMessage() {
-        if (connection.messageType(Message.MESSAGE) ||
-                connection.messageType(Message.EXIT)) {
+        if (connection.messageType(Message.MESSAGE)
+                || connection.messageType(Message.EXIT)) {
             spriteConnection.refresh();
             connection.clearMessage();
         }
@@ -114,15 +135,22 @@ public class Game {
         }
     }
 
-    private void updateTurn() {
-        if (!connection.messageType(Message.TURN)) {
-            return;
+    private void updateStart() {
+        if (connection.messageType(Message.TURN)) {
+            spriteConnection.refresh();
+            player1 = (boolean) connection.getObject();
+            rightTurn = player1;
+            connection.clearMessage();
+            if (player1) {
+                panel.getRules().setVisible(true);
+            }
         }
-        spriteConnection.refresh();
-        player1 = (boolean) connection.getObject();
-        rightTurn = player1;
-        connection.clearMessage();
-        phase = rightTurn ? MAIN : OPPONENT;
+        else if (connection.messageType(Message.RULES)) {
+            boolean[] obj = (boolean[]) connection.getObject();
+            setRules(obj[0], obj[1], obj[2], obj[3], obj[4]);
+            connection.clearMessage();
+            start();
+        }
     }
 
     private void updateMain() {
@@ -156,10 +184,11 @@ public class Game {
     }
 
     private void updateOpponent() {
-        if (!connection.messageType(Message.PLAY))
+        if (!connection.messageType(Message.PLAY)) {
             return;
+        }
         spriteConnection.refresh();
-        int[] play = (int[])connection.getObject();
+        int[] play = (int[]) connection.getObject();
         held = leftPlayer.getCards()[play[0]];
         leftPlayer.getCards()[play[0]] = null;
         board.getCards()[play[1]][play[2]] = held;
@@ -200,8 +229,8 @@ public class Game {
         double y = held.getRect().getCenterY();
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                if (board.getCards()[i][j] == null &&
-                        board.getRects()[i][j].contains(x, y) ) {
+                if (board.getCards()[i][j] == null
+                        && board.getRects()[i][j].contains(x, y)) {
                     held.setDefaultLocation(
                             board.getRects()[i][j].x, board.getRects()[i][j].y, 0);
                     board.getCards()[i][j] = held;
@@ -218,12 +247,5 @@ public class Game {
 
     public void draw(Graphics2D g) {
         spriteSet.draw(g);
-    }
-
-    public void connect() {
-        connection.setHostName("localhost");
-        connection.setPortNumber(6969);
-        connection.connect();
-        connection.start();
     }
 }
