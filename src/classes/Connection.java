@@ -30,14 +30,6 @@ public class Connection extends Thread {
     public Connection() {
         messages = new LinkedList();
     }
-   
-    public void setHostName(String hostName) {
-        this.hostName = hostName;
-    }
-    
-    public void setPortNumber(int portNumber) {
-        this.portNumber = portNumber;
-    }
     
     public Boolean hasMessage() {
         return messages.size() > 0;
@@ -66,11 +58,16 @@ public class Connection extends Thread {
     }
     
     public void sendPlay(int index, int x, int y) {
-        sendMessage(new Message("Your Turn", Message.PLAY, new int[] {index, x, y}));
+        sendMessage(new Message("Your Turn.", Message.PLAY, new int[] {index, x, y}));
     }
     
     public void sendExit() {
         sendMessage(new Message("Your opponent has left the game.", Message.EXIT, null));
+    }
+    
+    public void sendRules(boolean open, boolean random, boolean same, boolean plus, boolean combo) {
+        sendMessage(new Message("Opponent's turn.", Message.RULES,
+                new boolean[] {open, random, same, plus, combo}));
     }
 
     public void sendMessage(Message msg) {
@@ -83,11 +80,13 @@ public class Connection extends Thread {
         }
     }
     
-    public void connect() {
+    public boolean connect(String hostName, int portNumber) {
         try {
             socket = new Socket(hostName, portNumber);
             out =  new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
+            start();
+            return true;
         } catch (UnknownHostException e) {
             System.err.println("Host Name: " + hostName + "was not found");
             e.printStackTrace();
@@ -95,6 +94,7 @@ public class Connection extends Thread {
             System.err.println("Couldn't connect to: " + hostName);
             e.printStackTrace();
         } 
+        return false;
     }
     
     @Override
