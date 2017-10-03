@@ -69,6 +69,10 @@ public class Game {
             leftPlayer.getCards()[i].setDefaultLocation(50, 50 + 100 * i, i);
             rightPlayer.getCards()[i] = new SpriteCard(spriteSet, cards.get(1), true);
             rightPlayer.getCards()[i].setDefaultLocation(1000, 50 + 100 * i, i);
+//            leftPlayer.getCards()[i] = new SpriteCard(spriteSet, cards.get(2), false);
+//            leftPlayer.getCards()[i].setDefaultLocation(50, 50 + 100 * i, i);
+//            rightPlayer.getCards()[i] = new SpriteCard(spriteSet, cards.get(3), true);
+//            rightPlayer.getCards()[i].setDefaultLocation(1000, 50 + 100 * i, i);
         }
         connect();
     }
