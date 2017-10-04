@@ -31,7 +31,9 @@ public class GamePanel extends javax.swing.JPanel implements ActionListener {
         initComponents();
         
         //panels
+        //pnlLogin.setVisible(false);
         pnlRules.setVisible(false);
+        pnlRematch.setVisible(false);
         
         //game objects
         input = new Input(this);
@@ -48,6 +50,10 @@ public class GamePanel extends javax.swing.JPanel implements ActionListener {
     
     public RulesPanel getRules() {
         return pnlRules;
+    }
+    
+    public RematchPanel getRematch() {
+        return pnlRematch;
     }
 
     @Override
@@ -66,12 +72,15 @@ public class GamePanel extends javax.swing.JPanel implements ActionListener {
     private void initComponents() {
 
         pnlLogin = new frames.LoginPanel();
+        pnlRematch = new frames.RematchPanel();
         pnlRules = new frames.RulesPanel();
 
         setPreferredSize(new java.awt.Dimension(1200, 675));
         setLayout(null);
         add(pnlLogin);
         pnlLogin.setBounds(440, 220, 376, 242);
+        add(pnlRematch);
+        pnlRematch.setBounds(370, 220, 504, 136);
         add(pnlRules);
         pnlRules.setBounds(360, 160, 527, 329);
     }// </editor-fold>//GEN-END:initComponents
@@ -109,9 +118,34 @@ public class GamePanel extends javax.swing.JPanel implements ActionListener {
         connection.sendRules(open, random, same, plus, combo);
         pnlRules.setVisible(false);
     }
+    
+    public void rematch() {
+        pnlRematch.setVisible(false);
+        game.rematch();
+        connection.sendRematch(1);
+    }
+    
+    public void rules() {
+        pnlRematch.setVisible(false);
+        game.rules();
+        connection.sendRematch(2);
+        pnlRules.setVisible(true);
+    }
+    
+    public void cards() {
+        pnlRematch.setVisible(false);
+        game.cards();
+        connection.sendRematch(3);
+    }
+    
+    public void quit() {
+        connection.sendExit();
+        System.exit(0);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private frames.LoginPanel pnlLogin;
+    private frames.RematchPanel pnlRematch;
     private frames.RulesPanel pnlRules;
     // End of variables declaration//GEN-END:variables
 }

@@ -29,11 +29,17 @@ public class SpriteSet {
         sprites.add(sprite);
     }
     
+    public void remove(Sprite sprite) {
+        sprites.remove(sprite);
+    }
+    
     public void update() {
         if (update) {
             sprites.sort(null);
             update = false;
         }
+        for (Sprite sprite : sprites)
+            sprite.update();
     }
     
     public void draw(Graphics2D g) {

@@ -18,6 +18,7 @@ public class SpriteCard extends Sprite{
     private Card card;
     private Image character;
     private boolean blue;
+    private boolean back;
     private int defaultX;
     private int defaultY;
     private int defaultZ;
@@ -30,16 +31,13 @@ public class SpriteCard extends Sprite{
     };
     public static final Image BLUE = Loader.loadImage("Blue");
     public static final Image RED = Loader.loadImage("Red");
-    
-    
+    public static final Image BACK = Loader.loadImage("Back");
+
     public SpriteCard(SpriteSet spriteSet, Card card, boolean right) {
-        super(spriteSet);
+        super(spriteSet, 150, 150);
         this.card = card;
         this.blue = right;
         character = Loader.loadImage(card.getName());
-        rect.width = character.getWidth(null);
-        rect.height = character.getHeight(null);
-        image = new BufferedImage(rect.width, rect.height, BufferedImage.TYPE_INT_ARGB);
         refresh();
     }
     
@@ -47,8 +45,42 @@ public class SpriteCard extends Sprite{
         return card;
     }
     
+    public int getUp() {
+        return card.getUp();
+    }
+    
+    public int getRight() {
+        return card.getRight();
+    }
+    
+    public int getDown() {
+        return card.getDown();
+    }
+    
+    public int getLeft() {
+        return card.getLeft();
+    }
+    
     public boolean isBlue() {
         return blue;
+    }
+    
+    public boolean isBack() {
+        return back;
+    }
+    
+    public void setBlue(boolean blue) {
+        if (this.blue != blue) {
+            this.blue = blue;
+            refresh();
+        }
+    }
+    
+    public void setBack(boolean back) {
+        if (this.back != back) {
+            this.back = back;
+            refresh();
+        }
     }
     
     public void setDefaultLocation(int x, int y, int z) {
@@ -64,6 +96,11 @@ public class SpriteCard extends Sprite{
     
     public void refresh() {
         Graphics2D g = (Graphics2D) image.getGraphics();
+        //
+        if (back) {
+            g.drawImage(BACK, 0, 0, 150, 150, null);
+            return;
+        }
         //draw background
         if (blue)
             g.drawImage(BLUE, 0, 0, 150, 150, null);
@@ -80,5 +117,11 @@ public class SpriteCard extends Sprite{
         drawShadowedString(g, String.valueOf(card.getRight()), 122, 86);
         drawShadowedString(g, String.valueOf(card.getDown()), 66, 142);
         drawShadowedString(g, String.valueOf(card.getLeft()), 6, 86);
+    }
+    
+    @Override
+    public void dispose() {
+        super.dispose();
+        character.flush();
     }
 }
