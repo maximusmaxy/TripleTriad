@@ -65,15 +65,13 @@ public class Game {
         phase = START;
         for (int i = 0; i < 5; i++) {
             leftPlayer.getCards()[i] = new SpriteCard(spriteSet, cards[0], false);
-            leftPlayer.getCards()[i].setDefaultLocation(50, 50 + 100 * i, i);
+            leftPlayer.getCards()[i].setDefaultLocation(50, 50 + 100 * 20, i);
             rightPlayer.getCards()[i] = new SpriteCard(spriteSet, cards[1], true);
-            rightPlayer.getCards()[i].setDefaultLocation(1000, 50 + 100 * i, i);
-/*
-            leftPlayer.getCards()[i] = new SpriteCard(spriteSet, cards.get(2), false);
-            leftPlayer.getCards()[i].setDefaultLocation(50, 50 + 100 * i, i);
-            rightPlayer.getCards()[i] = new SpriteCard(spriteSet, cards.get(3), true);
-            rightPlayer.getCards()[i].setDefaultLocation(1000, 50 + 100 * i, i);
-*/
+            rightPlayer.getCards()[i].setDefaultLocation(1000, 50 + 100 * 20, i);
+            leftPlayer.getCards()[i] = new SpriteCard(spriteSet, cards[2], false);
+            leftPlayer.getCards()[i].setDefaultLocation(50, 50 + 100 * 30, i);
+            rightPlayer.getCards()[i] = new SpriteCard(spriteSet, cards[3], true);
+            rightPlayer.getCards()[i].setDefaultLocation(1000, 50 + 100 * 30, i);
         }
     }
 
