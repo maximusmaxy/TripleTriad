@@ -63,8 +63,7 @@ public class Game {
         board = new Board();
         rules = new Rules();
         phase = START;
-        for (int i = 0; i < 5; i++) 
-        {
+        for (int i = 0; i < 5; i++) {
             leftPlayer.getCards()[i] = new SpriteCard(spriteSet, cards[0], false);
             leftPlayer.getCards()[i].setDefaultLocation(50, 50 + 100 * i, i);
             rightPlayer.getCards()[i] = new SpriteCard(spriteSet, cards[1], true);
