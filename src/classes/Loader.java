@@ -58,7 +58,8 @@ public class Loader {
             }
             is.close();
         } catch (IOException ex) {
-            System.out.println(ex.getMessage());
+            System.err.println(ex.getMessage());
+            ex.printStackTrace();
         }
         return cards.toArray(new Card[cards.size()]);
     }
@@ -69,7 +70,8 @@ public class Loader {
             Image image = icon.getImage();
             return image;
         } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+            System.err.println(ex.getMessage());
+            ex.printStackTrace();
         }
         return null;
     }
