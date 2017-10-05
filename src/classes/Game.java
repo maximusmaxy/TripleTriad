@@ -62,6 +62,7 @@ public class Game {
     private Queue<SpriteCard> combos;
     private int sameCount;
     private int plusCount;
+    private boolean captureSound;
 
     //states
     public final int START = 1;
@@ -96,7 +97,6 @@ public class Game {
         rightPlayer = new Player(true);
         board = new Board(spriteSet);
         rules = new Rules();
-
 
         //test
         leftPlayer.setCards(spriteSet, cards, new int[]{0, 0, 0, 0, 0});
@@ -223,9 +223,16 @@ public class Game {
     }
 
     private void updateBoard() {
-        play(selected, false);
+        playCard(selected, false);
         while (combos.size() > 0) {
-            play(combos.poll(), true);
+            playCard(combos.poll(), true);
+        }
+        if (captureSound) {
+            Sound.play(Sound.CAPTURE);
+            captureSound = false;
+        }
+        else {
+            Sound.play(Sound.PLACE);
         }
         rightScore.refresh(rightPlayer.getScore());
         leftScore.refresh(leftPlayer.getScore());
@@ -251,7 +258,7 @@ public class Game {
         selected = null;
     }
 
-    private void play(SpriteCard card, boolean combo) {
+    private void playCard(SpriteCard card, boolean combo) {
         //reset
         Arrays.fill(others, null);
         Arrays.fill(captures, null);
@@ -264,10 +271,10 @@ public class Game {
         others[RIGHT] = board.getCard(card, 1, 0);
         others[DOWN] = board.getCard(card, 0, 1);
         others[LEFT] = board.getCard(card, -1, 0);
-        capture(card, others[UP], UP, combo);
-        capture(card, others[RIGHT], RIGHT, combo);
-        capture(card, others[DOWN], DOWN, combo);
-        capture(card, others[LEFT], LEFT, combo);
+        checkCapture(card, others[UP], UP, combo);
+        checkCapture(card, others[RIGHT], RIGHT, combo);
+        checkCapture(card, others[DOWN], DOWN, combo);
+        checkCapture(card, others[LEFT], LEFT, combo);
         //same
         if (rules.isSame() && sameCount > 1) {
             for (int i = 0; i < sames.length; i++) {
@@ -300,7 +307,7 @@ public class Game {
         }
     }
 
-    private void capture(SpriteCard card, SpriteCard other, int direction, boolean combo) {
+    private void checkCapture(SpriteCard card, SpriteCard other, int direction, boolean combo) {
         if (other == null) {
             return;
         }
@@ -352,6 +359,7 @@ public class Game {
             leftPlayer.addScore(1);
         }
         board.capture(card, blue, text);
+        captureSound = true;
     }
 
     private void updateOpponent() {
