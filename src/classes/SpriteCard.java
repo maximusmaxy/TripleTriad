@@ -37,10 +37,10 @@ public class SpriteCard extends Sprite{
         this.card = card;
         this.blue = right;
         System.out.println(card.getName());
-        character = Loader.loadImage(card.getName());
-        rect.width = character.getWidth(null);
-        rect.height = character.getHeight(null);
-        image = new BufferedImage(rect.width, rect.height, BufferedImage.TYPE_INT_ARGB);
+        //character = Loader.loadImage(card.getName());
+        //rect.width = character.getWidth(null);
+        //rect.height = character.getHeight(null);
+        //image = new BufferedImage(rect.width, rect.height, BufferedImage.TYPE_INT_ARGB);
         refresh();
     }
     
@@ -71,7 +71,7 @@ public class SpriteCard extends Sprite{
         else
             g.drawImage(RED, 0, 0, 150, 150, null);
         //draw character
-        g.drawImage(character, 0, 0, 150, 150, null);
+        //g.drawImage(character, 0, 0, 150, 150, null);
         //draw border
         g.drawImage(BORDERS[card.getRank() - 1], 0, 0, 150, 150, null);
         //draw text
