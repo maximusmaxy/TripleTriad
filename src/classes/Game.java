@@ -64,26 +64,26 @@ public class Game {
         rules = new Rules();
         phase = START;
         for (int i = 0; i < 5; i++) {
-            leftPlayer.getCards()[i] = new SpriteCard(spriteSet, cards[0], false);
+            leftPlayer.getCards()[i] = new SpriteCard(spriteSet, cards[i], false);
             leftPlayer.getCards()[i].setDefaultLocation(50, 50 + 100 * i, i);
-            leftPlayer.getCards()[i] = new SpriteCard(spriteSet, cards[1], false);
+            leftPlayer.getCards()[i] = new SpriteCard(spriteSet, cards[i], false);
             leftPlayer.getCards()[i].setDefaultLocation(50, 50 + 100 * i, i);
-            leftPlayer.getCards()[i] = new SpriteCard(spriteSet, cards[2], false);
+            leftPlayer.getCards()[i] = new SpriteCard(spriteSet, cards[i], false);
             leftPlayer.getCards()[i].setDefaultLocation(50, 50 + 100 * i, i);
-            leftPlayer.getCards()[i] = new SpriteCard(spriteSet, cards[3], false);
+            leftPlayer.getCards()[i] = new SpriteCard(spriteSet, cards[i], false);
             leftPlayer.getCards()[i].setDefaultLocation(50, 50 + 100 * i, i);
-            leftPlayer.getCards()[i] = new SpriteCard(spriteSet, cards[4], false);
+            leftPlayer.getCards()[i] = new SpriteCard(spriteSet, cards[i], false);
             leftPlayer.getCards()[i].setDefaultLocation(50, 50 + 100 * i, i);
             
-            rightPlayer.getCards()[i] = new SpriteCard(spriteSet, cards[0], true);
+            rightPlayer.getCards()[i] = new SpriteCard(spriteSet, cards[i], true);
             rightPlayer.getCards()[i].setDefaultLocation(1000, 50 + 100 * i, i);
-            rightPlayer.getCards()[i] = new SpriteCard(spriteSet, cards[1], true);
+            rightPlayer.getCards()[i] = new SpriteCard(spriteSet, cards[i], true);
             rightPlayer.getCards()[i].setDefaultLocation(1000, 50 + 100 * i, i);
-            rightPlayer.getCards()[i] = new SpriteCard(spriteSet, cards[2], true);
+            rightPlayer.getCards()[i] = new SpriteCard(spriteSet, cards[i], true);
             rightPlayer.getCards()[i].setDefaultLocation(1000, 50 + 100 * i, i);
-            rightPlayer.getCards()[i] = new SpriteCard(spriteSet, cards[3], true);
+            rightPlayer.getCards()[i] = new SpriteCard(spriteSet, cards[i], true);
             rightPlayer.getCards()[i].setDefaultLocation(1000, 50 + 100 * i, i);
-            rightPlayer.getCards()[i] = new SpriteCard(spriteSet, cards[4], true);
+            rightPlayer.getCards()[i] = new SpriteCard(spriteSet, cards[i], true);
             rightPlayer.getCards()[i].setDefaultLocation(1000, 50 + 100 * i, i);
         }
     }
