@@ -8,7 +8,9 @@ package classes;
 import frames.GamePanel;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.util.List;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
 import protocol.Message;
 
 /**
@@ -27,22 +29,40 @@ public class Game {
     //mouse stuff
     private int offsetX;
     private int offsetY;
-    private SpriteCard held;
-    private int heldIndex;
+    private SpriteCard selected;
+    private int selectedIndex;
     private SpriteCard hovered;
 
     //sprites
     private SpriteSet spriteSet;
     private SpriteConnection spriteConnection;
+    private SpriteScore leftScore;
+    private SpriteScore rightScore;
+    private SpriteCapture[][] spriteCaptures;
 
     //game objects
     private Player leftPlayer;
     private Player rightPlayer;
     private Board board;
     private Rules rules;
+
+    //game variables
     private boolean player1;
     private boolean rightTurn;
     private int phase;
+    private int wait;
+    private int playX;
+    private int playY;
+
+    //board calculation
+    private SpriteCard[] others;
+    private SpriteCard[] captures;
+    private boolean[] sames;
+    private int[] pluses;
+    private Queue<SpriteCard> combos;
+    private int sameCount;
+    private int plusCount;
+    private boolean captureSound;
 
     //states
     public final int START = 1;
@@ -51,41 +71,37 @@ public class Game {
     public final int OPPONENT = 4;
     public final int FINISH = 5;
 
+    //directions
+    public final int UP = 0;
+    public final int RIGHT = 1;
+    public final int DOWN = 2;
+    public final int LEFT = 3;
+
     public Game(GamePanel panel, Input input, Connection connection) {
         this.panel = panel;
         this.input = input;
         this.connection = connection;
         cards = Loader.loadCards();
+        phase = START;
         spriteSet = new SpriteSet();
         spriteConnection = new SpriteConnection(spriteSet, connection);
-        leftPlayer = new Player();
-        rightPlayer = new Player();
-        board = new Board();
+        leftScore = new SpriteScore(spriteSet, false);
+        rightScore = new SpriteScore(spriteSet, true);
+        spriteCaptures = new SpriteCapture[3][3];
+        others = new SpriteCard[4];
+        captures = new SpriteCard[4];
+        sames = new boolean[4];
+        pluses = new int[4];
+        combos = new LinkedList();
+        leftPlayer = new Player(false);
+        rightPlayer = new Player(true);
+        board = new Board(spriteSet);
         rules = new Rules();
-        phase = START;
-        for (int i = 0; i < 5; i++) {
-            rightPlayer.getCards()[i] = new SpriteCard(spriteSet, cards[i], false);
-            rightPlayer.getCards()[i].setDefaultLocation(50, 50 + 100 * i, i);
-            rightPlayer.getCards()[i] = new SpriteCard(spriteSet, cards[i], false);
-            rightPlayer.getCards()[i].setDefaultLocation(50, 50 + 100 * i, i);
-            rightPlayer.getCards()[i] = new SpriteCard(spriteSet, cards[i], false);
-            rightPlayer.getCards()[i].setDefaultLocation(50, 50 + 100 * i, i);
-            rightPlayer.getCards()[i] = new SpriteCard(spriteSet, cards[i], false);
-            rightPlayer.getCards()[i].setDefaultLocation(50, 50 + 100 * i, i);
-            rightPlayer.getCards()[i] = new SpriteCard(spriteSet, cards[i], false);
-            rightPlayer.getCards()[i].setDefaultLocation(50, 50 + 100 * i, i);
-            
-            leftPlayer.getCards()[i] = new SpriteCard(spriteSet, cards[i], true);
-            leftPlayer.getCards()[i].setDefaultLocation(1000, 50 + 100 * i, i);
-            leftPlayer.getCards()[i] = new SpriteCard(spriteSet, cards[i], true);
-            leftPlayer.getCards()[i].setDefaultLocation(1000, 50 + 100 * i, i);
-            leftPlayer.getCards()[i] = new SpriteCard(spriteSet, cards[i], true);
-            leftPlayer.getCards()[i].setDefaultLocation(1000, 50 + 100 * i, i);
-            leftPlayer.getCards()[i] = new SpriteCard(spriteSet, cards[i], true);
-            leftPlayer.getCards()[i].setDefaultLocation(1000, 50 + 100 * i, i);
-            leftPlayer.getCards()[i] = new SpriteCard(spriteSet, cards[i], true);
-            leftPlayer.getCards()[i].setDefaultLocation(1000, 50 + 100 * i, i);
-        }
+
+        //test
+        leftPlayer.setCards(spriteSet, cards, new int[]{0, 0, 0, 0, 0});
+        leftPlayer.setBack(!rules.isOpen());
+        rightPlayer.setCards(spriteSet, cards, new int[]{1, 1, 1, 1, 1});
     }
 
     public void setRules(boolean open, boolean random, boolean same, boolean plus, boolean combo) {
@@ -95,17 +111,16 @@ public class Game {
         rules.setPlus(plus);
         rules.setCombo(combo);
     }
-    
+
     public void setCollection(boolean[] collection) {
         this.collection = collection;
     }
-    
+
     public void start() {
         if (player1) {
             phase = MAIN;
             spriteConnection.refresh("Your turn.");
-        }
-        else {
+        } else {
             phase = OPPONENT;
             spriteConnection.refresh("Opponents turn.");
         }
@@ -114,6 +129,10 @@ public class Game {
     public void update() {
         updateMessage();
         updateHover();
+        spriteSet.update();
+        if (!updateWait()) {
+            return;
+        }
         switch (phase) {
             case START:
                 updateStart();
@@ -127,8 +146,10 @@ public class Game {
             case OPPONENT:
                 updateOpponent();
                 break;
+            case FINISH:
+                updateFinish();
+                break;
         }
-        spriteSet.update();
     }
 
     private void updateMessage() {
@@ -140,7 +161,7 @@ public class Game {
     }
 
     private void updateHover() {
-        if (held == null) {
+        if (selected == null) {
             SpriteCard hover = getMouseCard();
             if (hovered != null && hovered != hover) {
                 hovered.reset();
@@ -152,6 +173,14 @@ public class Game {
         }
     }
 
+    private boolean updateWait() {
+        if (wait > 0) {
+            wait--;
+            return false;
+        }
+        return true;
+    }
+
     private void updateStart() {
         if (connection.messageType(Message.TURN)) {
             spriteConnection.refresh();
@@ -161,8 +190,7 @@ public class Game {
             if (player1) {
                 panel.getRules().setVisible(true);
             }
-        }
-        else if (connection.messageType(Message.RULES)) {
+        } else if (connection.messageType(Message.RULES)) {
             boolean[] obj = (boolean[]) connection.getObject();
             setRules(obj[0], obj[1], obj[2], obj[3], obj[4]);
             connection.clearMessage();
@@ -172,32 +200,166 @@ public class Game {
 
     private void updateMain() {
         if (input.isClicked()) {
-            heldIndex = getMouseIndex();
-            if (heldIndex >= 0) {
-                held = rightPlayer.getCards()[heldIndex];
-                offsetX = held.getX() - input.getPosition().x;
-                offsetY = held.getY() - input.getPosition().y;
+            selectedIndex = getMouseIndex();
+            if (selectedIndex >= 0) {
+                selected = rightPlayer.getCards()[selectedIndex];
+                offsetX = selected.getX() - input.getPosition().x;
+                offsetY = selected.getY() - input.getPosition().y;
             }
         } else if (input.isReleased()) {
-            if (held != null) {
+            if (selected != null) {
                 if (placeCard()) {
                     return;
                 } else {
-                    held.reset();
+                    selected.reset();
                 }
-                held = null;
+                selected = null;
             }
         }
-        if (held != null) {
-            held.setX(input.getPosition().x + offsetX);
-            held.setY(input.getPosition().y + offsetY);
+        if (selected != null) {
+            selected.setX(input.getPosition().x + offsetX);
+            selected.setY(input.getPosition().y + offsetY);
         }
     }
 
     private void updateBoard() {
-        phase = rightTurn ? OPPONENT : MAIN;
-        rightTurn = !rightTurn;
-        held = null;
+        playCard(selected, false);
+        while (combos.size() > 0) {
+            playCard(combos.poll(), true);
+        }
+        if (captureSound) {
+            Sound.play(Sound.CAPTURE);
+            captureSound = false;
+        }
+        else {
+            Sound.play(Sound.PLACE);
+        }
+        rightScore.refresh(rightPlayer.getScore());
+        leftScore.refresh(leftPlayer.getScore());
+        if (board.checkFull()) {
+            String title;
+            if (rightPlayer.getScore() > leftPlayer.getScore()) {
+                title = "You win!";
+            } else if (rightPlayer.getScore() < leftPlayer.getScore()) {
+                title = "You lose!";
+            } else {
+                title = "It's a draw!";
+            }
+            spriteConnection.refresh(title);
+            if (player1) {
+                panel.getRematch().setTitle(title);
+                panel.getRematch().setVisible(true);
+            }
+            phase = FINISH;
+        } else {
+            phase = rightTurn ? OPPONENT : MAIN;
+            rightTurn = !rightTurn;
+        }
+        selected = null;
+    }
+
+    private void playCard(SpriteCard card, boolean combo) {
+        //reset
+        Arrays.fill(others, null);
+        Arrays.fill(captures, null);
+        Arrays.fill(sames, false);
+        Arrays.fill(pluses, 0);
+        sameCount = 0;
+        plusCount = 0;
+        //captures
+        others[UP] = board.getCard(card, 0, -1);
+        others[RIGHT] = board.getCard(card, 1, 0);
+        others[DOWN] = board.getCard(card, 0, 1);
+        others[LEFT] = board.getCard(card, -1, 0);
+        checkCapture(card, others[UP], UP, combo);
+        checkCapture(card, others[RIGHT], RIGHT, combo);
+        checkCapture(card, others[DOWN], DOWN, combo);
+        checkCapture(card, others[LEFT], LEFT, combo);
+        //same
+        if (rules.isSame() && sameCount > 1) {
+            for (int i = 0; i < sames.length; i++) {
+                if (sames[i] && card.isBlue() != others[i].isBlue()) {
+                    score(others[i], card.isBlue(), rules.isCombo(), "Same!");
+                }
+            }
+        }
+        //plus
+        if (rules.isPlus() && plusCount > 1) {
+            for (int i = 0; i < pluses.length; i++) {
+                if (pluses[i] != 0 && card.isBlue() != others[i].isBlue()) {
+                    int count = 1;
+                    for (int j = 0; j < pluses.length; j++) {
+                        if (i != j && pluses[i] == pluses[j]) {
+                            count++;
+                        }
+                    }
+                    if (count > 1) {
+                        score(others[i], card.isBlue(), rules.isCombo(), "Plus!");
+                    }
+                }
+            }
+        }
+        //captures
+        for (int i = 0; i < captures.length; i++) {
+            if (captures[i] != null && card.isBlue() != captures[i].isBlue()) {
+                score(captures[i], card.isBlue(), combo, combo ? "Combo!" : "Score!");
+            }
+        }
+    }
+
+    private void checkCapture(SpriteCard card, SpriteCard other, int direction, boolean combo) {
+        if (other == null) {
+            return;
+        }
+        int cardValue = 0;
+        int otherValue = 0;
+        switch (direction) {
+            case UP:
+                cardValue = card.getUp();
+                otherValue = other.getDown();
+                break;
+            case RIGHT:
+                cardValue = card.getRight();
+                otherValue = other.getLeft();
+                break;
+            case DOWN:
+                cardValue = card.getDown();
+                otherValue = other.getUp();
+                break;
+            case LEFT:
+                cardValue = card.getLeft();
+                otherValue = other.getRight();
+                break;
+        }
+        if (card.isBlue() != other.isBlue() && cardValue > otherValue) {
+            captures[direction] = other;
+        }
+        if (!combo) {
+            if (rules.isSame() && cardValue == otherValue) {
+                sames[direction] = true;
+                sameCount++;
+            }
+            if (rules.isPlus()) {
+                pluses[direction] = cardValue + otherValue;
+                plusCount++;
+            }
+        }
+    }
+
+    private void score(SpriteCard card, boolean blue, boolean combo, String text) {
+        card.setBlue(blue);
+        if (combo) {
+            combos.add(card);
+        }
+        if (blue) {
+            rightPlayer.addScore(1);
+            leftPlayer.addScore(-1);
+        } else {
+            rightPlayer.addScore(-1);
+            leftPlayer.addScore(1);
+        }
+        board.capture(card, blue, text);
+        captureSound = true;
     }
 
     private void updateOpponent() {
@@ -206,13 +368,36 @@ public class Game {
         }
         spriteConnection.refresh();
         int[] play = (int[]) connection.getObject();
-        held = leftPlayer.getCards()[play[0]];
+        playX = play[1];
+        playY = play[2];
+        selected = leftPlayer.getCards()[play[0]];
+        if (!rules.isOpen()) {
+            selected.setBack(false);
+        }
         leftPlayer.getCards()[play[0]] = null;
-        board.getCards()[play[1]][play[2]] = held;
-        Rectangle rect = board.getRects()[play[1]][play[2]];
-        held.setDefaultLocation(rect.x, rect.y, 0);
+        board.getCards()[play[2]][play[1]] = selected;
+        Rectangle rect = board.getRects()[play[2]][play[1]];
+        selected.setDefaultLocation(rect.x, rect.y, 0);
         connection.clearMessage();
         phase = BOARD;
+    }
+
+    private void updateFinish() {
+        if (!connection.messageType(Message.REMATCH)) {
+            return;
+        }
+        switch ((int) connection.getObject()) {
+            case 1: //change to constant later
+                rematch();
+                break;
+            case 2: //change to constant later
+                rules();
+                break;
+            case 3: //change to constant later
+                cards();
+                break;
+        }
+        connection.clearMessage();
     }
 
     private SpriteCard getMouseCard() {
@@ -242,17 +427,19 @@ public class Game {
     }
 
     private boolean placeCard() {
-        double x = held.getRect().getCenterX();
-        double y = held.getRect().getCenterY();
+        double x = selected.getRect().getCenterX();
+        double y = selected.getRect().getCenterY();
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                if (board.getCards()[i][j] == null
-                        && board.getRects()[i][j].contains(x, y)) {
-                    held.setDefaultLocation(
-                            board.getRects()[i][j].x, board.getRects()[i][j].y, 0);
-                    board.getCards()[i][j] = held;
-                    connection.sendPlay(heldIndex, i, j);
-                    rightPlayer.getCards()[heldIndex] = null;
+                if (board.getCards()[j][i] == null
+                        && board.getRects()[j][i].contains(x, y)) {
+                    playX = i;
+                    playY = j;
+                    selected.setDefaultLocation(
+                            board.getRects()[j][i].x, board.getRects()[j][i].y, 0);
+                    board.getCards()[j][i] = selected;
+                    connection.sendPlay(selectedIndex, i, j);
+                    rightPlayer.getCards()[selectedIndex] = null;
                     spriteConnection.refresh("Opponents turn");
                     phase = BOARD;
                     return true;
@@ -260,6 +447,35 @@ public class Game {
             }
         }
         return false;
+    }
+
+    public void rematch() {
+        leftPlayer.reset();
+        if (!rules.isOpen()) {
+            leftPlayer.setBack(false);
+        }
+        rightPlayer.reset();
+        leftScore.refresh(5);
+        rightScore.refresh(5);
+        rightTurn = player1;
+        board.clear();
+        start();
+    }
+
+    public void rules() {
+        reset();
+    }
+
+    public void cards() {
+        reset();
+    }
+
+    public void reset() {
+        leftPlayer.clear();
+        rightPlayer.clear();
+        board.clear();
+        rightTurn = player1;
+        phase = START;
     }
 
     public void draw(Graphics2D g) {

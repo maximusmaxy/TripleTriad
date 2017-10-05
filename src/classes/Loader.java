@@ -8,6 +8,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.net.URL;
+import javax.sound.sampled.*;
 import javax.swing.ImageIcon;
 
 /**
@@ -26,6 +28,10 @@ public class Loader {
     
     public static Image loadImage(String name) {
         return loader.image(name);
+    }
+    
+    public static Clip loadClip(String name) {
+        return loader.clip(name);
     }
     
     //this class in the future will use a webservice to get the collection.
@@ -69,6 +75,20 @@ public class Loader {
             ImageIcon icon = new ImageIcon(this.getClass().getResource("/images/" + name + ".png"));
             Image image = icon.getImage();
             return image;
+        } catch (Exception ex) {
+            System.err.println(ex.getMessage());
+            ex.printStackTrace();
+        }
+        return null;
+    }
+    
+    public Clip clip(String name) {
+        try {
+            URL url = this.getClass().getResource("/sounds/" + name + ".wav");
+            AudioInputStream audioIn = AudioSystem.getAudioInputStream(url);
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioIn);
+            return clip;
         } catch (Exception ex) {
             System.err.println(ex.getMessage());
             ex.printStackTrace();

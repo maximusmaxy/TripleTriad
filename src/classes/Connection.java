@@ -12,6 +12,8 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import protocol.*;
 
 /**
@@ -21,8 +23,6 @@ import protocol.*;
 
 public class Connection extends Thread {
     private Socket socket;
-    private String hostName;
-    private int portNumber;
     private ObjectOutputStream out;
     private ObjectInputStream in;
     private Queue<Message> messages;
@@ -78,6 +78,10 @@ public class Connection extends Thread {
             System.err.println("Error sending message.");
             e.printStackTrace();
         }
+    }
+    
+    public void sendRematch(int type) {
+        sendMessage(new Message("Rematch", Message.REMATCH, type));
     }
     
     public boolean connect(String hostName, int portNumber) {

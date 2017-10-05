@@ -7,6 +7,7 @@ package classes;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
@@ -15,7 +16,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 
 /**
- *
+ * Class for handling buffered images and drawing them to the screen.
  * @author Max
  */
 public class Sprite implements Comparable<Sprite> {
@@ -28,16 +29,11 @@ public class Sprite implements Comparable<Sprite> {
     
     public static final Color TRANSPARENT = new Color(0, 0, 0, 0);
     
-    public Sprite(SpriteSet spriteSet) {
+    protected Sprite(SpriteSet spriteSet) {
         this.spriteSet = spriteSet;
         spriteSet.add(this);
         rect = new Rectangle();
         font = new Font("Helvetica", Font.BOLD, 32);
-    }
-    
-    public Sprite(SpriteSet spriteSet, String imageName) {
-        this(spriteSet);
-        setImage(Loader.loadImage(imageName));
     }
     
     public Sprite(SpriteSet spriteSet, int width, int height) {
@@ -114,9 +110,25 @@ public class Sprite implements Comparable<Sprite> {
         g.setColor(oldColor);
         g.drawString(s, x, y);
     }
-
+    
+    protected void drawCenteredShadowedString(Graphics2D g, String s, int x, int y, int width, int height) {
+        FontMetrics metrics = g.getFontMetrics(font);
+        int rx = x + (width - metrics.stringWidth(s)) / 2;    
+        int ry = y + ((height - metrics.getHeight()) / 2) + metrics.getAscent();
+        drawShadowedString(g, s, rx, ry); 
+    }
+    
+    //for overiding
+    public void update() {}
+    
     public void draw(Graphics2D g) {
-        g.drawImage(image, rect.x, rect.y, rect.width, rect.height, null);
+        g.drawImage(image, null, rect.x, rect.y);
+        //g.drawImage(image, rect.x, rect.y, rect.width, rect.height, null);
+    }
+    
+    public void dispose() {
+        image.flush();
+        spriteSet.remove(this);
     }
     
     @Override

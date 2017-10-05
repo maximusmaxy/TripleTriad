@@ -5,6 +5,7 @@
  */
 package classes;
 
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 
 /**
@@ -16,9 +17,9 @@ public class SpriteConnection extends Sprite {
     private Connection connection;
     
     public SpriteConnection(SpriteSet spriteSet, Connection connection) {
-        super(spriteSet, 600, 50);
+        super(spriteSet, 1200, 50);
         this.connection = connection;
-        setLocation(400, 0, 10);
+        setLocation(0, 0, 10);
         refresh("Waiting for connection");
     }
     
@@ -27,10 +28,9 @@ public class SpriteConnection extends Sprite {
     }
     
     public void refresh(String string) {
-        System.out.println(string);
         Graphics2D g = (Graphics2D) image.getGraphics();
         clearImage(g);
         g.setFont(font);
-        g.drawString(string, 0, 32);
+        drawCenteredShadowedString(g, string, 0, 0, rect.width, rect.height); 
     }
 }
