@@ -36,6 +36,7 @@ public class SpriteCard extends Sprite{
         super(spriteSet);
         this.card = card;
         this.blue = right;
+        System.out.println(card.getName());
         character = Loader.loadImage(card.getName());
         rect.width = character.getWidth(null);
         rect.height = character.getHeight(null);

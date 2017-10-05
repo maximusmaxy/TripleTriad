@@ -1,8 +1,9 @@
-name|up|right|down|left|rank (rank stats: rank 1(6-11) rank 2(12-16) rank 3(17-21)) template:||||||
+name|up|right|down|left|rank (rank stats: rank 1(8-12) rank 2(13-17) rank 3(18-22) template:||||||
 AinsleyRobot|5|8|5|4|3
 Barbarian|7|2|6|2|2|
 Bat|6|2|2|5|2|
 Dragoon|3|7|9|3|3|
+Ent|4|0|5|3|1|
 FoxWoman|2|4|4|7|2|
 FrozenGhoulSnail|3|5|3|5|1|
 Ghost|2|8|5|2|2|
@@ -10,13 +11,13 @@ Ghoul|4|5|2|0|1|
 Giant|9|4|5|3|3|
 Golem|7|2|2|7|2|
 Knight|5|6|3|7|3|
-LadBugWoman|8|6|4|4|3|
-Mimic|5|4|4|2|2
+LadyBugWoman|8|6|4|4|3|
+LivingCandle|3|4|4|1|1|
 MummyPoro|5|1|2|4|1
+Mimic|5|4|4|2|2
 Scarecrow|5|6|3|7|3
-SkeletonKing|7|8|0|7|3|
 Slime|0|5|5|2|1|
-Tree|4|0|5|3|1|
+SkeletonKing|7|8|0|7|3|
 Werewolf|5|0|5|6|2|
-Witch|6|5|0|60|2|
+Witch|6|5|0|6|2|
 Zombie|6|2|4|0|1|
