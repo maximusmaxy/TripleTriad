@@ -122,8 +122,7 @@ public class Sprite implements Comparable<Sprite> {
     public void update() {}
     
     public void draw(Graphics2D g) {
-        g.drawImage(image, null, rect.x, rect.y);
-        //g.drawImage(image, rect.x, rect.y, rect.width, rect.height, null);
+        g.drawImage(image, rect.x, rect.y, rect.width, rect.height, null);
     }
     
     public void dispose() {

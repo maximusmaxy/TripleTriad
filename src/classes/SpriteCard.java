@@ -45,6 +45,10 @@ public class SpriteCard extends Sprite{
         return card;
     }
     
+    public int getIndex() {
+        return card.getIndex();
+    }
+    
     public int getUp() {
         return card.getUp();
     }

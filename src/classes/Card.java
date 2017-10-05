@@ -12,14 +12,16 @@ package classes;
 public class Card {
 
     private String name;
+    private int index;
     private int up;
     private int right;
     private int down;
     private int left;
     private int rank;
     
-    public Card(String name, int up, int right, int down, int left, int rank) {
+    public Card(String name, int index, int up, int right, int down, int left, int rank) {
         this.name = name;
+        this.index = index;
         this.up = up;
         this.right = right;
         this.down = down;
@@ -31,8 +33,8 @@ public class Card {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public int getIndex() {
+        return index;
     }
 
     public int getUp() {

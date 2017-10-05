@@ -52,19 +52,22 @@ public class Loader {
         String line;
         try {
             br.readLine();
+            int i = 0;
             while ((line = br.readLine()) != null) {
                 split = line.split("\\|");
                 cards.add(new Card(
                         split[0],
+                        i,
                         Integer.parseInt(split[1]),
                         Integer.parseInt(split[2]),
                         Integer.parseInt(split[3]),
                         Integer.parseInt(split[4]),
                         Integer.parseInt(split[5])));
+                i++;
             }
             is.close();
         } catch (IOException ex) {
-            System.err.println(ex.getMessage());
+            System.err.println("Error loading cards.");
             ex.printStackTrace();
         }
         return cards.toArray(new Card[cards.size()]);
@@ -76,7 +79,7 @@ public class Loader {
             Image image = icon.getImage();
             return image;
         } catch (Exception ex) {
-            System.err.println(ex.getMessage());
+            System.err.println("Error loading image: " + name + ".png");
             ex.printStackTrace();
         }
         return null;
@@ -90,7 +93,7 @@ public class Loader {
             clip.open(audioIn);
             return clip;
         } catch (Exception ex) {
-            System.err.println(ex.getMessage());
+            System.err.println("Error loading sound clip: " + name + ".wav");
             ex.printStackTrace();
         }
         return null;

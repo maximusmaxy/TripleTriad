@@ -33,6 +33,7 @@ public class GamePanel extends javax.swing.JPanel implements ActionListener {
         //panels
         //pnlLogin.setVisible(false);
         pnlRules.setVisible(false);
+        pnlCardSelect.setVisible(false);
         pnlRematch.setVisible(false);
         
         //game objects
@@ -55,6 +56,10 @@ public class GamePanel extends javax.swing.JPanel implements ActionListener {
     public RematchPanel getRematch() {
         return pnlRematch;
     }
+    
+    public pnlCardSelect getCardSelect() {
+        return pnlCardSelect;
+    }
 
     @Override
     public void paintComponent(Graphics g) {
@@ -74,7 +79,7 @@ public class GamePanel extends javax.swing.JPanel implements ActionListener {
         pnlLogin = new frames.LoginPanel();
         pnlRematch = new frames.RematchPanel();
         pnlRules = new frames.RulesPanel();
-        pnlCardSelect2 = new frames.pnlCardSelect();
+        pnlCardSelect = new frames.pnlCardSelect();
 
         setPreferredSize(new java.awt.Dimension(1200, 675));
         setLayout(null);
@@ -84,8 +89,10 @@ public class GamePanel extends javax.swing.JPanel implements ActionListener {
         pnlRematch.setBounds(370, 220, 504, 136);
         add(pnlRules);
         pnlRules.setBounds(360, 160, 527, 329);
-        add(pnlCardSelect2);
-        pnlCardSelect2.setBounds(250, 140, 779, 468);
+
+        pnlCardSelect.setPreferredSize(new java.awt.Dimension(796, 468));
+        add(pnlCardSelect);
+        pnlCardSelect.setBounds(210, 110, 800, 468);
     }// </editor-fold>//GEN-END:initComponents
 
     @Override
@@ -147,7 +154,7 @@ public class GamePanel extends javax.swing.JPanel implements ActionListener {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private frames.pnlCardSelect pnlCardSelect2;
+    private frames.pnlCardSelect pnlCardSelect;
     private frames.LoginPanel pnlLogin;
     private frames.RematchPanel pnlRematch;
     private frames.RulesPanel pnlRules;
