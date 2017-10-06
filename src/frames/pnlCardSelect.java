@@ -5,6 +5,8 @@
  */
 package frames;
 
+import javax.swing.JButton;
+
 /**
  *
  * @author avata
@@ -17,6 +19,19 @@ public class pnlCardSelect extends javax.swing.JPanel {
     public pnlCardSelect() {
         initComponents();
     }
+    
+    public JButton getAccept() {
+        return btnAccept;
+    }
+    
+    public void addCard(int cardIndex) {
+        ((GamePanel)getParent()).addCard(cardIndex);
+    }
+    
+    public void reset() {
+        btnAccept.setEnabled(false);
+        pnlCards.reset();
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -27,41 +42,42 @@ public class pnlCardSelect extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jButtonAdd = new javax.swing.JButton();
-        jButtonRemove = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        cardListPanel1 = new frames.cardListPanel();
+        btnBack = new javax.swing.JButton();
+        spCards = new javax.swing.JScrollPane();
+        pnlCards = new frames.cardListPanel();
+        btnAccept = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(204, 204, 204));
         setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         setPreferredSize(new java.awt.Dimension(796, 468));
 
-        jButtonAdd.setText("Add");
-        jButtonAdd.addActionListener(new java.awt.event.ActionListener() {
+        btnBack.setText("Back");
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonAddActionPerformed(evt);
+                btnBackActionPerformed(evt);
             }
         });
 
-        jButtonRemove.setText("Remove");
-        jButtonRemove.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonRemoveActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout cardListPanel1Layout = new javax.swing.GroupLayout(cardListPanel1);
-        cardListPanel1.setLayout(cardListPanel1Layout);
-        cardListPanel1Layout.setHorizontalGroup(
-            cardListPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout pnlCardsLayout = new javax.swing.GroupLayout(pnlCards);
+        pnlCards.setLayout(pnlCardsLayout);
+        pnlCardsLayout.setHorizontalGroup(
+            pnlCardsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 753, Short.MAX_VALUE)
         );
-        cardListPanel1Layout.setVerticalGroup(
-            cardListPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        pnlCardsLayout.setVerticalGroup(
+            pnlCardsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 406, Short.MAX_VALUE)
         );
 
-        jScrollPane1.setViewportView(cardListPanel1);
+        spCards.setViewportView(pnlCards);
+
+        btnAccept.setText("Accept");
+        btnAccept.setEnabled(false);
+        btnAccept.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAcceptActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -70,40 +86,46 @@ public class pnlCardSelect extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButtonAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(spCards, javax.swing.GroupLayout.DEFAULT_SIZE, 772, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonRemove)
-                        .addGap(0, 631, Short.MAX_VALUE)))
+                        .addComponent(btnAccept, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 386, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(spCards, javax.swing.GroupLayout.PREFERRED_SIZE, 386, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonAdd)
-                    .addComponent(jButtonRemove))
+                    .addComponent(btnBack)
+                    .addComponent(btnAccept))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButtonAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButtonAddActionPerformed
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        if (pnlCards.getSelected().size() == 0) {
+            return;
+        }
+        ((GamePanel)getParent()).removeCard();
+        btnAccept.setEnabled(false);
+        pnlCards.removeCard();
+        
+    }//GEN-LAST:event_btnBackActionPerformed
 
-    private void jButtonRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRemoveActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButtonRemoveActionPerformed
+    private void btnAcceptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAcceptActionPerformed
+        ((GamePanel)getParent()).setCards();
+    }//GEN-LAST:event_btnAcceptActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private frames.cardListPanel cardListPanel1;
-    private javax.swing.JButton jButtonAdd;
-    private javax.swing.JButton jButtonRemove;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton btnAccept;
+    private javax.swing.JButton btnBack;
+    private frames.cardListPanel pnlCards;
+    private javax.swing.JScrollPane spCards;
     // End of variables declaration//GEN-END:variables
 }

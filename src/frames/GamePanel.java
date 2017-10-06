@@ -89,10 +89,8 @@ public class GamePanel extends javax.swing.JPanel implements ActionListener {
         pnlRematch.setBounds(370, 220, 504, 136);
         add(pnlRules);
         pnlRules.setBounds(360, 160, 527, 329);
-
-        pnlCardSelect.setPreferredSize(new java.awt.Dimension(796, 468));
         add(pnlCardSelect);
-        pnlCardSelect.setBounds(210, 110, 800, 468);
+        pnlCardSelect.setBounds(100, 110, 800, 468);
     }// </editor-fold>//GEN-END:initComponents
 
     @Override
@@ -124,9 +122,27 @@ public class GamePanel extends javax.swing.JPanel implements ActionListener {
     
     public void setRules(boolean open, boolean random, boolean same, boolean plus, boolean combo) {
         game.setRules(open, random, same, plus, combo);
-        game.start();
         connection.sendRules(open, random, same, plus, combo);
         pnlRules.setVisible(false);
+        if (random) {
+            game.setRandom();
+        }
+        else {
+            pnlCardSelect.setVisible(true);
+        }
+    }
+    
+    public void addCard(int index) {
+        game.addCard(index);
+    }
+    
+    public void removeCard() {
+        game.removeCard();
+    }
+    
+    public void setCards() {
+        pnlCardSelect.setVisible(false);
+        game.setCards();
     }
     
     public void rematch() {
@@ -136,10 +152,11 @@ public class GamePanel extends javax.swing.JPanel implements ActionListener {
     }
     
     public void rules() {
+        pnlRules.reset();
         pnlRematch.setVisible(false);
         game.rules();
         connection.sendRematch(2);
-        pnlRules.setVisible(true);
+        
     }
     
     public void cards() {

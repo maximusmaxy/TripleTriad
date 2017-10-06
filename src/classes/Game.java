@@ -23,7 +23,6 @@ public class Game {
     private GamePanel panel;
     private Input input;
     private Connection connection;
-    private Card[] cards;
     private boolean[] collection;
 
     //mouse stuff
@@ -53,6 +52,7 @@ public class Game {
     private int wait;
     private int playX;
     private int playY;
+    private int[] storedCards;
 
     //board calculation
     private SpriteCard[] others;
@@ -66,10 +66,11 @@ public class Game {
 
     //states
     public final int START = 1;
-    public final int MAIN = 2;
-    public final int BOARD = 3;
-    public final int OPPONENT = 4;
-    public final int FINISH = 5;
+    public final int CARDS = 2;
+    public final int MAIN = 3;
+    public final int BOARD = 4;
+    public final int OPPONENT = 5;
+    public final int FINISH = 6;
 
     //directions
     public final int UP = 0;
@@ -81,7 +82,6 @@ public class Game {
         this.panel = panel;
         this.input = input;
         this.connection = connection;
-        cards = Loader.loadCards();
         phase = START;
         spriteSet = new SpriteSet();
         spriteConnection = new SpriteConnection(spriteSet, connection);
@@ -97,11 +97,6 @@ public class Game {
         rightPlayer = new Player(true);
         board = new Board(spriteSet);
         rules = new Rules();
-
-        //test
-        leftPlayer.setCards(spriteSet, cards, new int[]{0, 0, 0, 0, 0});
-        leftPlayer.setBack(!rules.isOpen());
-        rightPlayer.setCards(spriteSet, cards, new int[]{1, 1, 1, 1, 1});
     }
 
     public void setRules(boolean open, boolean random, boolean same, boolean plus, boolean combo) {
@@ -110,19 +105,47 @@ public class Game {
         rules.setSame(same);
         rules.setPlus(plus);
         rules.setCombo(combo);
+        spriteConnection.refresh("Opponent is selecting cards.");
     }
 
     public void setCollection(boolean[] collection) {
         this.collection = collection;
     }
 
+    public void addCard(int index) {
+        rightPlayer.addCard(spriteSet, index);
+    }
+
+    public void removeCard() {
+        rightPlayer.removeCard();
+    }
+
+    public void setCards() {
+        connection.sendCards(rightPlayer.getCards());
+        if (storedCards != null) {
+            leftPlayer.setCards(spriteSet, storedCards, !rules.isOpen());
+            start();
+        } else {
+            spriteConnection.refresh("Waiting for opponent to choose cards.");
+            phase = CARDS;
+        }
+    }
+    
+    public void setRandom() {
+        rightPlayer.randomCards(spriteSet, collection);
+        connection.sendCards(rightPlayer.getCards());
+        phase = CARDS;
+    }
+
     public void start() {
+        rightScore.setVisible(true);
+        leftScore.setVisible(true);
         if (player1) {
             phase = MAIN;
             spriteConnection.refresh("Your turn.");
         } else {
             phase = OPPONENT;
-            spriteConnection.refresh("Opponents turn.");
+            spriteConnection.refresh("Opponent's turn.");
         }
     }
 
@@ -136,6 +159,9 @@ public class Game {
         switch (phase) {
             case START:
                 updateStart();
+                break;
+            case CARDS:
+                updateCardSelect();
                 break;
             case MAIN:
                 updateMain();
@@ -193,6 +219,27 @@ public class Game {
         } else if (connection.messageType(Message.RULES)) {
             boolean[] obj = (boolean[]) connection.getObject();
             setRules(obj[0], obj[1], obj[2], obj[3], obj[4]);
+            spriteConnection.refresh();
+            connection.clearMessage();
+            if (rules.isRandom()) {
+                setRandom();
+            }
+            else {
+                panel.getCardSelect().setVisible(true);
+            }
+            
+        } else if (connection.messageType(Message.CARDS)) {
+            storedCards = (int[]) connection.getObject();
+            spriteConnection.refresh();
+            connection.clearMessage();
+            phase = CARDS;
+        }
+    }
+    
+    private void updateCardSelect() {
+        if (connection.messageType(Message.CARDS)) {
+            int[] cards = (int[]) connection.getObject();
+            leftPlayer.setCards(spriteSet, cards, !rules.isOpen());
             connection.clearMessage();
             start();
         }
@@ -230,8 +277,7 @@ public class Game {
         if (captureSound) {
             Sound.play(Sound.CAPTURE);
             captureSound = false;
-        }
-        else {
+        } else {
             Sound.play(Sound.PLACE);
         }
         rightScore.refresh(rightPlayer.getScore());
@@ -440,7 +486,7 @@ public class Game {
                     board.getCards()[j][i] = selected;
                     connection.sendPlay(selectedIndex, i, j);
                     rightPlayer.getCards()[selectedIndex] = null;
-                    spriteConnection.refresh("Opponents turn");
+                    spriteConnection.refresh("Opponent's turn");
                     phase = BOARD;
                     return true;
                 }
@@ -452,7 +498,7 @@ public class Game {
     public void rematch() {
         leftPlayer.reset();
         if (!rules.isOpen()) {
-            leftPlayer.setBack(false);
+            leftPlayer.setBack(true);
         }
         rightPlayer.reset();
         leftScore.refresh(5);
@@ -464,15 +510,29 @@ public class Game {
 
     public void rules() {
         reset();
+        if (player1) {
+            panel.getRules().setVisible(true);
+            spriteConnection.refresh("Please Choose Rules.");
+        } else {
+            spriteConnection.refresh("Waiting for player 1 to choose rules.");
+        }
     }
 
     public void cards() {
         reset();
+        spriteConnection.refresh("Opponent is selecting cards.");
+        panel.getCardSelect().setVisible(true);
+
     }
 
     public void reset() {
+        panel.getCardSelect().reset();
         leftPlayer.clear();
         rightPlayer.clear();
+        leftScore.refresh(5);
+        leftScore.setVisible(false);
+        rightScore.refresh(5);
+        rightScore.setVisible(false);
         board.clear();
         rightTurn = player1;
         phase = START;

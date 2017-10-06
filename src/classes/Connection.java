@@ -66,8 +66,17 @@ public class Connection extends Thread {
     }
     
     public void sendRules(boolean open, boolean random, boolean same, boolean plus, boolean combo) {
-        sendMessage(new Message("Opponent's turn.", Message.RULES,
+        sendMessage(new Message("Opponent is selecting cards.", Message.RULES,
                 new boolean[] {open, random, same, plus, combo}));
+    }
+    
+    public void sendCards(SpriteCard[] cards) {
+        int[] cardIndexes = new int[5];
+        for (int i = 0; i < cards.length; i++) {
+            cardIndexes[i] = cards[i].getIndex();
+        }
+        sendMessage(new Message("Opponent finished selecting cards.",
+                Message.CARDS, cardIndexes));
     }
 
     public void sendMessage(Message msg) {
