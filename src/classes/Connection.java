@@ -27,6 +27,7 @@ public class Connection extends Thread {
     private ObjectInputStream in;
     private Queue<Message> messages;
     
+    
     public Connection() {
         messages = new LinkedList();
     }
