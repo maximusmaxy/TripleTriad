@@ -25,6 +25,7 @@ public class SpriteScore extends Sprite{
             setLocation(900, 550);
         else
             setLocation(240, 550);
+        visible = false;
         refresh(5);
     }
     

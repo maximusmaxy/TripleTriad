@@ -7,6 +7,7 @@ package classes;
 
 import java.awt.Rectangle;
 import java.util.Arrays;
+import java.util.Random;
 
 /**
  *
@@ -39,11 +40,75 @@ public class Player {
         return cards[index];
     }
     
-    public void setCards(SpriteSet spriteSet, Card[] cards, int[] indexes) {
+    public void addCard(SpriteSet spriteSet, int cardIndex) {
+        int lastIndex = getLastIndex();
+        if (lastIndex == 5) {
+            throw new RuntimeException("Can't add card to " + 
+                    (rightPlayer ? "right" : "left") + " player, hand is full");
+        }
+        setCard(spriteSet, cardIndex, lastIndex);
+    }
+    
+    public int getLastIndex() {
+        for (int i = 0; i < defaultCards.length; i++) {
+            if (defaultCards[i] == null) {
+                return i;
+            }
+        }
+        return -1;
+    }
+    
+    public void setCard(SpriteSet spriteSet, int cardIndex, int handIndex) {
+        this.cards[handIndex] = new SpriteCard(spriteSet, Loader.loadCards()[cardIndex], rightPlayer);
+        Rectangle rect = rects[handIndex];
+        this.cards[handIndex].setDefaultLocation(rect.x, rect.y, handIndex);
+        this.defaultCards[handIndex] = this.cards[handIndex];
+    }
+    
+    public void setCards(SpriteSet spriteSet, int[] indexes, boolean back) {
         for (int i = 0; i < indexes.length; i++) {
-            this.cards[i] = new SpriteCard(spriteSet, cards[indexes[i]], rightPlayer);
-            this.cards[i].setDefaultLocation(rects[i].x, rects[i].y, i);
-            this.defaultCards[i] = this.cards[i];
+            setCard(spriteSet, indexes[i], i);
+            cards[i].setBack(back);
+        }
+    }
+    
+    public void removeCard() {
+        int lastIndex = getLastIndex();
+        if (lastIndex == 0) {
+            throw new RuntimeException("Can't remove card from " + 
+                    (rightPlayer ? "right" : "left") + " player, no card to remove");
+        }
+        if (lastIndex == -1) {
+            lastIndex = 5;
+        }
+        cards[lastIndex - 1].dispose();
+        cards[lastIndex - 1] = null;
+        defaultCards[lastIndex - 1] = null;
+    }
+    
+    public void randomCards(SpriteSet spriteSet, boolean[] collection) {
+        Card[] cardList = Loader.loadCards();
+        Random rnd = new Random();
+        int index = 0;
+        while (index < 5) {
+            int randomInt = rnd.nextInt(collection.length);
+            boolean contains = false;
+            for (int i = 0; i < index; i++) {
+                if (cards[i].getIndex() == randomInt) {
+                    contains = true;
+                    break;
+                }
+            }
+            if (contains) {
+                continue;
+            }
+            if (collection[randomInt]) {
+                addCard(spriteSet, randomInt);
+            }
+            else {
+                continue;
+            }
+            index++;
         }
     }
     

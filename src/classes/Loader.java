@@ -21,9 +21,10 @@ import javax.swing.ImageIcon;
 public class Loader {
 
     private static final Loader loader = new Loader();
+    private Card[] cards;
     
     public static Card[] loadCards() {
-        return loader.cards();
+        return loader.getCards();
     }
     
     public static Image loadImage(String name) {
@@ -32,6 +33,14 @@ public class Loader {
     
     public static Clip loadClip(String name) {
         return loader.clip(name);
+    }
+    
+    public Loader() {
+        cards = cards();
+    }
+    
+    private Card[] getCards() {
+        return cards;
     }
     
     //this class in the future will use a webservice to get the collection.

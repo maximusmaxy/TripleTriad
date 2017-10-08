@@ -26,6 +26,7 @@ public class Sprite implements Comparable<Sprite> {
     protected BufferedImage image;
     protected int z;
     protected Font font;
+    protected boolean visible;
     
     public static final Color TRANSPARENT = new Color(0, 0, 0, 0);
     
@@ -34,6 +35,7 @@ public class Sprite implements Comparable<Sprite> {
         spriteSet.add(this);
         rect = new Rectangle();
         font = new Font("Helvetica", Font.BOLD, 32);
+        visible = true;
     }
     
     public Sprite(SpriteSet spriteSet, int width, int height) {
@@ -86,6 +88,10 @@ public class Sprite implements Comparable<Sprite> {
         setZ(z);
     }
     
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+    
     public BufferedImage getImage() {
         return image;
     }
@@ -122,7 +128,8 @@ public class Sprite implements Comparable<Sprite> {
     public void update() {}
     
     public void draw(Graphics2D g) {
-        g.drawImage(image, rect.x, rect.y, rect.width, rect.height, null);
+        if (visible)
+            g.drawImage(image, rect.x, rect.y, rect.width, rect.height, null);
     }
     
     public void dispose() {

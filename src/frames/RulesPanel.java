@@ -168,6 +168,14 @@ public class RulesPanel extends javax.swing.JPanel {
         if (!selected)
             chkCombo.setSelected(false);
     }
+    
+    public void reset() {
+        chkOpen.setSelected(false);
+        chkRandom.setSelected(false);
+        chkSame.setSelected(false);
+        chkPlus.setSelected(false);
+        chkCombo.setSelected(false);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAccept;
