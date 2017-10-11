@@ -13,8 +13,8 @@ import javax.sound.sampled.Clip;
  */
 public class Sound {
     
-    public static final Clip CAPTURE = Loader.loadClip("Capture");
-    public static final Clip PLACE = Loader.loadClip("Place");
+    public static final Clip CAPTURE = Loader.loadClip("Combo!~");
+    public static final Clip PLACE = Loader.loadClip("Place!~");
     
     public static void play(Clip clip) {
         if (clip.isRunning())
