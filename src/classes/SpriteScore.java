@@ -22,9 +22,9 @@ public class SpriteScore extends Sprite{
         this.player1 = player1;
         font = new Font("Helvetica", Font.BOLD, 64);
         if (player1)
-            setLocation(900, 550);
+            setLocation(862, 550);
         else
-            setLocation(240, 550);
+            setLocation(296, 550);
         visible = false;
         refresh(5);
     }

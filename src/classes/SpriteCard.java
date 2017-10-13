@@ -34,7 +34,7 @@ public class SpriteCard extends Sprite{
     public static final Image BACK = Loader.loadImage("Back");
 
     public SpriteCard(SpriteSet spriteSet, Card card, boolean right) {
-        super(spriteSet, 150, 150);
+        super(spriteSet, Card.WIDTH, Card.HEIGHT);
         this.card = card;
         this.blue = right;
         character = Loader.loadImage(card.getName());
@@ -102,18 +102,18 @@ public class SpriteCard extends Sprite{
         Graphics2D g = (Graphics2D) image.getGraphics();
         //
         if (back) {
-            g.drawImage(BACK, 0, 0, 150, 150, null);
+            g.drawImage(BACK, 0, 0, Card.WIDTH, Card.HEIGHT, null);
             return;
         }
         //draw background
         if (blue)
-            g.drawImage(BLUE, 0, 0, 150, 150, null);
+            g.drawImage(BLUE, 0, 0, Card.WIDTH, Card.HEIGHT, null);
         else
-            g.drawImage(RED, 0, 0, 150, 150, null);
+            g.drawImage(RED, 0, 0, Card.WIDTH, Card.HEIGHT, null);
         //draw character
-        g.drawImage(character, 0, 0, 150, 150, null);
+        g.drawImage(character, 0, 0, Card.WIDTH, Card.HEIGHT, null);
         //draw border
-        g.drawImage(BORDERS[card.getRank() - 1], 0, 0, 150, 150, null);
+        g.drawImage(BORDERS[card.getRank() - 1], 0, 0, Card.WIDTH, Card.HEIGHT, null);
         //draw text
         g.setColor(Color.WHITE);
         g.setFont(font);

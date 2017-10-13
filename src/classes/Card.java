@@ -11,6 +11,9 @@ package classes;
  */
 public class Card {
 
+    public static final int WIDTH = 156;
+    public static final int HEIGHT = 156;
+    
     private String name;
     private int index;
     private int up;

@@ -20,15 +20,18 @@ public class Player {
     private boolean rightPlayer;
     private Rectangle[] rects;
     
+    public static final int GAP = 109;
+    public static final int OVERLAP = 46;
+    
     public Player(boolean rightPlayer) {
         this.rightPlayer = rightPlayer;
         cards = new SpriteCard[5];
         defaultCards = new SpriteCard[5];
         score = 5;
         rects = new Rectangle[5];
-        int x = rightPlayer ? 1000 : 50;
+        int x = rightPlayer ? 939 : 105;
         for (int i = 0; i < rects.length; i++) {
-            rects[i] = new Rectangle(x, 50 + 100 * i, 150, 150);
+            rects[i] = new Rectangle(x, 41 + GAP * i, Card.WIDTH, Card.HEIGHT);
         }
     }
 

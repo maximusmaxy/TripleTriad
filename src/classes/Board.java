@@ -23,8 +23,8 @@ public class Board {
         captures = new SpriteCapture[3][3];
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                rects[j][i] = new Rectangle(375 + 150 * i, 112 + 150 * j, 150, 150);
-                captures[j][i] = new SpriteCapture(spriteSet, rects[j][i].x, rects[j][i].y + 50);
+                rects[j][i] = new Rectangle(366 + Card.WIDTH * i, 103 + Card.HEIGHT * j, Card.WIDTH, Card.HEIGHT);
+                captures[j][i] = new SpriteCapture(spriteSet, rects[j][i].x, rects[j][i].y + 60);
             }
         }
     }

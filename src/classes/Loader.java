@@ -52,6 +52,7 @@ public class Loader {
         return collection;
     }
     
+    
     public Card[] cards() {
         List<Card> cards = new ArrayList();
         InputStream is = getClass().getResourceAsStream("/data/cards.txt");
