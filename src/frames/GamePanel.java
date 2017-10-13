@@ -84,11 +84,11 @@ public class GamePanel extends javax.swing.JPanel implements ActionListener {
         setPreferredSize(new java.awt.Dimension(1200, 675));
         setLayout(null);
         add(pnlLogin);
-        pnlLogin.setBounds(440, 220, 376, 242);
+        pnlLogin.setBounds(400, 220, 396, 246);
         add(pnlRematch);
-        pnlRematch.setBounds(370, 220, 504, 136);
+        pnlRematch.setBounds(340, 220, 522, 140);
         add(pnlRules);
-        pnlRules.setBounds(360, 160, 527, 329);
+        pnlRules.setBounds(280, 180, 600, 353);
         add(pnlCardSelect);
         pnlCardSelect.setBounds(100, 110, 800, 468);
     }// </editor-fold>//GEN-END:initComponents

@@ -26,21 +26,21 @@
     <Component class="frames.LoginPanel" name="pnlLogin">
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-          <AbsoluteConstraints x="440" y="220" width="-1" height="-1"/>
+          <AbsoluteConstraints x="400" y="220" width="-1" height="-1"/>
         </Constraint>
       </Constraints>
     </Component>
     <Component class="frames.RematchPanel" name="pnlRematch">
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-          <AbsoluteConstraints x="370" y="220" width="-1" height="-1"/>
+          <AbsoluteConstraints x="340" y="220" width="-1" height="-1"/>
         </Constraint>
       </Constraints>
     </Component>
     <Component class="frames.RulesPanel" name="pnlRules">
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-          <AbsoluteConstraints x="360" y="160" width="-1" height="-1"/>
+          <AbsoluteConstraints x="280" y="180" width="600" height="-1"/>
         </Constraint>
       </Constraints>
     </Component>

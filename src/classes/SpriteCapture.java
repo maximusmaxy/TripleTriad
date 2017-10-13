@@ -25,7 +25,7 @@ public class SpriteCapture extends SpriteAlpha {
     private int defaultY;
     
     public SpriteCapture(SpriteSet spriteSet, int x, int y) {
-        super(spriteSet, 150, 50);
+        super(spriteSet, Card.WIDTH, 50);
         defaultX = x;
         defaultY = y;
         setLocation(defaultX, defaultY, 11);

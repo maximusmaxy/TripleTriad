@@ -38,6 +38,7 @@ public class Game {
     private SpriteScore leftScore;
     private SpriteScore rightScore;
     private SpriteCapture[][] spriteCaptures;
+    private SpriteBackground background;
 
     //game objects
     private Player leftPlayer;
@@ -86,7 +87,10 @@ public class Game {
         spriteSet = new SpriteSet();
         spriteConnection = new SpriteConnection(spriteSet, connection);
         leftScore = new SpriteScore(spriteSet, false);
+        leftScore.setVisible(true);
         rightScore = new SpriteScore(spriteSet, true);
+        rightScore.setVisible(true);
+        background = new SpriteBackground(spriteSet);
         spriteCaptures = new SpriteCapture[3][3];
         others = new SpriteCard[4];
         captures = new SpriteCard[4];
@@ -97,6 +101,10 @@ public class Game {
         rightPlayer = new Player(true);
         board = new Board(spriteSet);
         rules = new Rules();
+        //test
+//        leftPlayer.setCards(spriteSet, new int[] {1, 2, 3, 4, 5}, false);
+//        rightPlayer.setCards(spriteSet, new int[] {1, 2, 3, 4, 5}, false);
+        
     }
 
     public void setRules(boolean open, boolean random, boolean same, boolean plus, boolean combo) {
@@ -540,5 +548,7 @@ public class Game {
 
     public void draw(Graphics2D g) {
         spriteSet.draw(g);
+        g.drawString(String.valueOf(input.getPosition().getX()), 0, 32);
+        g.drawString(String.valueOf(input.getPosition().getY()), 0, 64);
     }
 }
