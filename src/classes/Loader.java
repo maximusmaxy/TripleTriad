@@ -47,7 +47,6 @@ public class Loader {
     //it will return null if it fails.
     //right now it just returns a full collection.
     public static boolean[] loadCollection(String username, String password) {
-        
         boolean[] collection = new boolean[loadCards().length];
         Arrays.fill(collection, true);
         return collection;
