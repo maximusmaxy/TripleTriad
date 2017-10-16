@@ -4,7 +4,7 @@ Barbarian|7|2|6|2|2|
 Bat|6|2|2|5|2|
 DeathPatron|5|7|2|5|2|
 Dragoon|3|7|9|3|3|
-Dualist|1|1|1|1|1|
+Dualist|2|7|1|2|1|
 Ent|4|0|5|3|1|
 FoxWoman|2|4|4|7|2|
 FrozenGhoulSnail|5|2|2|3|1|
