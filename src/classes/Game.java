@@ -282,9 +282,10 @@ public class Game {
         playCard(selected, false);
         while (combos.size() > 0) {
             playCard(combos.poll(), true);
+            Sound.play(Sound.CCCOMBO);
             Sound.play(Sound.COMBO);
         }
-        if (captureSound) {
+        if (captureSound) { 
             Sound.play(Sound.CAPTURE);
             captureSound = false;
         } else {
