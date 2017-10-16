@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 import protocol.Message;
+import javax.sound.sampled.Clip;
 
 /**
  *
@@ -281,6 +282,7 @@ public class Game {
         playCard(selected, false);
         while (combos.size() > 0) {
             playCard(combos.poll(), true);
+            Sound.play(Sound.COMBO);
         }
         if (captureSound) {
             Sound.play(Sound.CAPTURE);
@@ -294,10 +296,13 @@ public class Game {
             String title;
             if (rightPlayer.getScore() > leftPlayer.getScore()) {
                 title = "You win!";
+                Sound.play(Sound.VICTORY);
             } else if (rightPlayer.getScore() < leftPlayer.getScore()) {
                 title = "You lose!";
+                Sound.play(Sound.DEFEAT);
             } else {
                 title = "It's a draw!";
+                Sound.play(Sound.DRAW);
             }
             spriteConnection.refresh(title);
             if (player1) {
