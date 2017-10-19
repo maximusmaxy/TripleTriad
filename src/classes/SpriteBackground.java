@@ -22,7 +22,7 @@ public class SpriteBackground extends Sprite{
     }
     
     public void reset() {
-        Image background = Loader.loadImage("Template");
+        Image background = Loader.loadImage("BackgroundNew");
         Graphics2D g = (Graphics2D) image.getGraphics();
         g.drawImage(background, 0, 0, 1200, 675, null);
     }
