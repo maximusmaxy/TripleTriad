@@ -9,50 +9,66 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.net.URL;
+import java.util.Base64;
+import java.util.BitSet;
 import javax.sound.sampled.*;
 import javax.swing.ImageIcon;
 
 /**
- * You can't get resources from other packages using static methods so this
- * is a stupid class that allows you to do it.
+ * You can't get resources from other packages using static methods so this is a
+ * stupid class that allows you to do it.
+ *
  * @author Max
  */
-
 public class Loader {
 
     private static final Loader loader = new Loader();
     private Card[] cards;
-    
+
     public static Card[] loadCards() {
         return loader.getCards();
     }
-    
+
     public static Image loadImage(String name) {
         return loader.image(name);
     }
-    
+
     public static Clip loadClip(String name) {
         return loader.clip(name);
     }
-    
+
     public Loader() {
         cards = cards();
     }
-    
+
     private Card[] getCards() {
         return cards;
     }
-    
-    //this class in the future will use a webservice to get the collection.
-    //it will return null if it fails.
-    //right now it just returns a full collection.
+
     public static boolean[] loadCollection(String username, String password) {
+        try {
+            boolean[] collection = new boolean[loadCards().length];
+            String collectionString = getCollection(username, password);
+            if (collectionString == null) {
+                return null;
+            }
+            BitSet bitSet = BitSet.valueOf(Base64.getDecoder().decode(collectionString));
+            for (int i = 0; i < collection.length; i++) {
+                collection[i] = bitSet.get(i);
+            }
+            return collection;
+        } catch (Exception ex) {
+            System.err.println("Failed to load collection");
+            return null;
+        }
+    }
+
+    public static boolean[] fullCollection() {
         boolean[] collection = new boolean[loadCards().length];
         Arrays.fill(collection, true);
         return collection;
     }
-    
-    
+
     public Card[] cards() {
         List<Card> cards = new ArrayList();
         InputStream is = getClass().getResourceAsStream("/data/cards.txt");
@@ -82,7 +98,7 @@ public class Loader {
         }
         return cards.toArray(new Card[cards.size()]);
     }
-    
+
     public Image image(String name) {
         try {
             ImageIcon icon = new ImageIcon(this.getClass().getResource("/images/" + name + ".png"));
@@ -94,7 +110,7 @@ public class Loader {
         }
         return null;
     }
-    
+
     public Clip clip(String name) {
         try {
             URL url = this.getClass().getResource("/sounds/" + name + ".wav");
@@ -107,5 +123,11 @@ public class Loader {
             ex.printStackTrace();
         }
         return null;
+    }
+
+    private static String getCollection(java.lang.String username, java.lang.String password) {
+        org.maximusmaxy.databaseservice.TTDBService_Service service = new org.maximusmaxy.databaseservice.TTDBService_Service();
+        org.maximusmaxy.databaseservice.TTDBService port = service.getTTDBServicePort();
+        return port.getCollection(username, password);
     }
 }

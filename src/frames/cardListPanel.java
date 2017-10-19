@@ -28,17 +28,17 @@ public class cardListPanel extends javax.swing.JPanel {
      */
     private Card[] cardList;
     private SpriteSet spriteSet;
-    private boolean[] collection;
     private List<SpriteCard> cards;
     private List<Integer> selected;
 
     public cardListPanel() {
         initComponents();
         addMouseListener(new CardSelectMouseAdapter());
-        //system
         spriteSet = new SpriteSet();
+    }
+    
+    public void loadCollection(boolean[] collection) {
         cards = new ArrayList();
-        collection = Loader.loadCollection(null, null);
         cardList = Loader.loadCards();
         selected = new ArrayList();
         //loads up cards owned by the player either through a random generator or through selection of cards:
@@ -99,7 +99,7 @@ public class cardListPanel extends javax.swing.JPanel {
             }
             for (int i = 0; i < cards.size(); i++) {
                 SpriteCard card = cards.get(i);
-                if (card.getRect().contains(e.getPoint())) {
+                if (card.isVisible() && card.getRect().contains(e.getPoint())) {
                     card.setVisible(false);
                     getPanel().addCard(card.getIndex());
                     selected.add(i);
