@@ -548,7 +548,5 @@ public class Game {
 
     public void draw(Graphics2D g) {
         spriteSet.draw(g);
-        g.drawString(String.valueOf(input.getPosition().getX()), 0, 32);
-        g.drawString(String.valueOf(input.getPosition().getY()), 0, 64);
     }
 }

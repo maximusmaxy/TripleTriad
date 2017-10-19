@@ -88,6 +88,10 @@ public class Sprite implements Comparable<Sprite> {
         setZ(z);
     }
     
+    public boolean isVisible() {
+        return visible;
+    }
+    
     public void setVisible(boolean visible) {
         this.visible = visible;
     }

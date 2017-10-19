@@ -32,6 +32,10 @@ public class pnlCardSelect extends javax.swing.JPanel {
         btnAccept.setEnabled(false);
         pnlCards.reset();
     }
+    
+    public void loadCollection(boolean[] collection) {
+        pnlCards.loadCollection(collection);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.

@@ -105,7 +105,12 @@ public class GamePanel extends javax.swing.JPanel implements ActionListener {
     }
     
     public void connect(String server, int port, String user, String pass) {
-        boolean[] collection = Loader.loadCollection(user, pass);
+        boolean[] collection = null;
+        if (user.isEmpty() && pass.isEmpty()) {
+            collection = Loader.fullCollection();
+        } else {
+            collection = Loader.loadCollection(user, pass);
+        }
         if (collection == null) {
             JOptionPane.showMessageDialog(this,
                     "Failed to connect to DB.\nEither the DB is down or the username/password is incorrect.");
@@ -113,6 +118,8 @@ public class GamePanel extends javax.swing.JPanel implements ActionListener {
         }
         else {
             game.setCollection(collection);
+            pnlCardSelect.loadCollection(collection);
+            pnlCardSelect.repaint();
         }
         if (connection.connect(server, port))
             pnlLogin.setVisible(false);
