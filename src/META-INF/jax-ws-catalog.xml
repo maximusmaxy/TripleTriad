@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
+    <system systemId="http://localhost:8080/Triple_Triad_Web_Service/TripleTriadDatabaseService?wsdl" uri="wsdl/localhost_8080/Triple_Triad_Web_Service/TripleTriadDatabaseService.wsdl"/>
+    <system systemId="http://localhost:8080/Triple_Triad_Web_Service/TripleTriadDatabaseService?xsd=1" uri="wsdl/localhost_8080/Triple_Triad_Web_Service/TripleTriadDatabaseService.xsd_1.xsd"/>
+    <system systemId="http://localhost:8080/TTWebService/TTDBService?wsdl" uri="wsdl/localhost_8080/TTWebService/TTDBService.wsdl"/>
+    <system systemId="http://localhost:8080/TTWebService/TTDBService?xsd=1" uri="wsdl/localhost_8080/TTWebService/TTDBService.xsd_1.xsd"/>
+</catalog>
