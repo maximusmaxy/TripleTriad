@@ -19,6 +19,7 @@ public class GameFrame extends javax.swing.JFrame {
     public GameFrame() {
         initComponents();
         setTitle("Triple Triad");
+        this.setLocationRelativeTo(null);
     }
 
     /**
