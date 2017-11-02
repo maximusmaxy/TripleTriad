@@ -14,7 +14,7 @@ Ent|6|4|0|0|1|
 FavouredOnes|5|5|5|5|3|
 FemaleLotus|5|0|7|4|2|
 FoxWoman|7|3|0|6|2|
-FrozenGhoulSnail|||||1|
+FrozenGhoulSnail|3|0|4|5|1|
 Ghost|5|0|4|8|2|
 Ghoul|4|1|1|5|1|
 Giant|7|4|8|3|3|
