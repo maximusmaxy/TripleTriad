@@ -7,6 +7,6 @@ PASSWORD VARCHAR(64) NOT NULL,
 collection VARCHAR(64) NOT NULL);
 
 INSERT INTO Users(username, PASSWORD, collection) VALUES
-('maxie', 'password', 'zBgB'),
-('mohommad', 'password', 'H0kb'),
-('master', 'password', '//8P');
+('maxie', 'password', 'hwsmZWkB'),
+('mohommad', 'password', 'I1PJvvwB'),
+('master', 'password', '//////8B');
