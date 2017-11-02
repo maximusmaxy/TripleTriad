@@ -29,7 +29,7 @@ public class Player {
         defaultCards = new SpriteCard[5];
         score = 5;
         rects = new Rectangle[5];
-        int x = rightPlayer ? 939 : 105;
+        int x = rightPlayer ? 930 : 105;
         for (int i = 0; i < rects.length; i++) {
             rects[i] = new Rectangle(x, 41 + GAP * i, Card.WIDTH, Card.HEIGHT);
         }
